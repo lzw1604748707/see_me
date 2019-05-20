@@ -1,46 +1,61 @@
 <template>
-<el-header height="80px" :style="{ 'background-color':'#5589B1' }">
-     <img
-        src="../assets/element-logo.svg"
-        alt="element-logo"
-        class="header-logo">
-		<ul class="header-operations">
-       <li >欢迎你，{{this.$store.state.name}}</li>
-       <li @click="dialogVisible = true">修改密码</li>
-       <li @click="hanleLogOut">退出</li>
-			<!-- <li @click="showThemeDialog">切换主题色</li> -->
-		</ul>
+  <el-header height="80px"
+    :style="{ 'background-color':'#5589B1' }">
+    <img src="../assets/element-logo.svg"
+      alt="element-logo"
+      class="header-logo">
+    <ul class="header-operations">
+      <li>欢迎你，{{this.$store.state.name}}</li>
+      <li @click="dialogVisible = true">修改密码</li>
+      <li @click="hanleLogOut">退出</li>
+      <!-- <li @click="showThemeDialog">切换主题色</li> -->
+    </ul>
 
-    <el-dialog
-  title="提示"
-  :visible.sync="dialogVisible"
-  width="30%"
-  >
+    <el-dialog title="提示"
+      :visible.sync="dialogVisible"
+      width="30%">
 
-  <el-form :model="infoForm" status-icon :rules="rules2" ref="infoForm" label-width="100px" class="demo-ruleForm">
-  <el-form-item label="原密碼：" prop="oldPassword">
-    <el-input type="password" v-model="infoForm.oldPassword" auto-complete="off"></el-input>
-  </el-form-item>
-  <el-form-item label="新密碼：" prop="password">
-    <el-input type="password" v-model="infoForm.password" auto-complete="off"></el-input>
-  </el-form-item>
-  <el-form-item label="確認新密碼：" prop="checkPass">
-    <el-input type="password" v-model="infoForm.checkPass" auto-complete="off"></el-input>
-  </el-form-item>
- 
-  <el-form-item>
-    <el-button type="primary" @click="submitForm('infoForm')">提交</el-button>
-    <el-button @click="resetForm('infoForm')">重置</el-button>
-  </el-form-item>
-</el-form>
+      <el-form :model="infoForm"
+        status-icon
+        :rules="rules2"
+        ref="infoForm"
+        label-width="100px"
+        class="demo-ruleForm">
+        <el-form-item label="原密码："
+          prop="oldPassword">
+          <el-input type="password"
+            v-model="infoForm.oldPassword"
+            auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码："
+          prop="password">
+          <el-input type="password"
+            v-model="infoForm.password"
+            auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认新密码："
+          prop="checkPass">
+          <el-input type="password"
+            v-model="infoForm.checkPass"
+            auto-complete="off"></el-input>
+        </el-form-item>
 
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">確 定</el-button>
-  </span>
-</el-dialog>
+        <el-form-item>
+          <el-button type="primary"
+            @click="submitForm('infoForm')">提交</el-button>
+          <el-button @click="resetForm('infoForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
 
-</el-header>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary"
+          @click="dialogVisible = false">确定</el-button>
+      </span>
+    </el-dialog>
+
+  </el-header>
 </template>
 
 <script type="text/ecmascript-6">
@@ -51,7 +66,7 @@ export default {
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("請輸入密碼"));
+        callback(new Error("请输入密码"));
       } else {
         if (this.infoForm.checkPass !== "") {
           this.$refs.infoForm.validateField("checkPass");
@@ -61,9 +76,9 @@ export default {
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("請在此輸入密碼"));
+        callback(new Error("请在此输入密码"));
       } else if (value !== this.infoForm.password) {
-        callback(new Error("兩次輸入密碼不一致!"));
+        callback(new Error("兩次输入密码不一致!"));
       } else {
         callback();
       }
@@ -79,18 +94,18 @@ export default {
       rules2: {
         oldPassword: [{ validator: validatePass, trigger: "blur" }],
         password: [
-          { min: 6, max: 18, message: "長度在 5 到 18 個字符", trigger: "blur" },
+          { min: 6, max: 18, message: "长度在 5 到 18 个字符", trigger: "blur" },
           { validator: validatePass, trigger: "blur" }
         ],
         checkPass: [
-          { min: 6, max: 18, message: "長度在 5 到 18 個字符", trigger: "blur" },
+          { min: 6, max: 18, message: "长度在 5 到 18 个字符", trigger: "blur" },
           { validator: validatePass2, trigger: "blur" }
         ]
       }
     };
   },
   methods: {
-    submitForm: function(formName) {
+    submitForm: function (formName) {
       var _this = this;
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -110,10 +125,10 @@ export default {
         }
       });
     },
-    resetForm: function(formName) {
+    resetForm: function (formName) {
       this.$refs[formName].resetFields();
     },
-    hanleLogOut: function() {
+    hanleLogOut: function () {
       removeToken();
       var _this = this;
       this.$confirm("确认退出吗", "提示", {}).then(() => {
@@ -127,5 +142,4 @@ export default {
 </script>
 
 <style>
-
 </style>

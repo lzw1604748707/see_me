@@ -1,114 +1,177 @@
 <template>
-<div>
-<!-- 搜索 -->
-<el-form inline :model="query" label-position="right" label-width="70px" class="query-form">
-  <el-input v-model="query.title" placeholder="請輸入資訊名稱" style="width:150px;"></el-input>
-  <el-form-item>
-    <el-button type="primary" @click="handleSearch" >搜索</el-button>
-    <el-button type="primary" @click="handleAdd">添加資訊</el-button>
-  </el-form-item>
-</el-form>
-<!-- 数据表格 -->
-<el-table :data="tableData" class="table" stripe border>
-  <el-table-column type="index" label="序號"  width="70"></el-table-column>
-  <el-table-column prop="title" label="名稱"></el-table-column>
-  <el-table-column prop="cover" label="封面圖" width="70">
-    <template  slot-scope="scope">
-      <img style="width:30px;height:30px;cursor: pointer;"  :src="scope.row.cover" @click="handleCoverCardPreview(scope.row.cover)">
-    </template>
-  </el-table-column>
-  <el-table-column prop="accountName" label="資訊發佈人"></el-table-column>
-  <el-table-column prop="readCount" label="閱讀量"></el-table-column>
-  <el-table-column prop="account" label="操作人"></el-table-column>
-  <el-table-column prop="status" label="狀態">
-    <template  slot-scope="scope">
-      <span v-if="scope.row.status === true ">上架</span>
-      <span v-else>下架</span>
-    </template>
-  </el-table-column>
-  <el-table-column label="操作" width="230" >
-    <template slot-scope="scope">
-      <el-button size="mini" type="warning" @click="handleDownShelf(scope.$index, scope.row)">下架</el-button>
-      <el-button size="mini"  @click="handleEdit(scope.$index, scope.row)">編輯</el-button>
-      <el-button size="mini" type="danger" @click="handleRemove(scope.$index, scope.row)">刪除</el-button>
-    </template>
-  </el-table-column>
-</el-table>
-<!-- 分页组件 -->
-<el-pagination
-  @size-change="handleSizeChange"
-  @current-change="handleCurrentChange"
-  :current-page="page.pageNumber"
-  :page-sizes="[10, 20, 30, 40]"
-  :page-size="page.pageSize"
-  layout="total, sizes, prev, pager, next, jumper"
-  :total="page.total">
-</el-pagination>
+  <div>
+    <!-- 搜索 -->
+    <el-form inline
+      :model="query"
+      label-position="right"
+      label-width="70px"
+      class="query-form">
+      <el-input v-model="query.title"
+        placeholder="请输入资讯名称"
+        style="width:150px;"></el-input>
+      <el-form-item>
+        <el-button type="primary"
+          @click="handleSearch">搜索</el-button>
+        <el-button type="primary"
+          @click="handleAdd">添加咨询</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- 数据表格 -->
+    <el-table :data="tableData"
+      class="table"
+      stripe
+      border>
+      <el-table-column type="index"
+        label="序号"
+        width="70"></el-table-column>
+      <el-table-column prop="title"
+        label="名称"></el-table-column>
+      <el-table-column prop="cover"
+        label="封面图"
+        width="70">
+        <template slot-scope="scope">
+          <img style="width:30px;height:30px;cursor: pointer;"
+            :src="scope.row.cover"
+            @click="handleCoverCardPreview(scope.row.cover)">
+        </template>
+      </el-table-column>
+      <el-table-column prop="accountName"
+        label="咨询发布人"></el-table-column>
+      <el-table-column prop="readCount"
+        label="阅读量"></el-table-column>
+      <el-table-column prop="account"
+        label="操作人"></el-table-column>
+      <el-table-column prop="status"
+        label="状态">
+        <template slot-scope="scope">
+          <span v-if="scope.row.status === true ">上架</span>
+          <span v-else>下架</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作"
+        width="230">
+        <template slot-scope="scope">
+          <el-button size="mini"
+            type="warning"
+            @click="handleDownShelf(scope.$index, scope.row)">下架</el-button>
+          <el-button size="mini"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini"
+            type="danger"
+            @click="handleRemove(scope.$index, scope.row)">刪除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页组件 -->
+    <el-pagination @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="page.pageNumber"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="page.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="page.total">
+    </el-pagination>
 
+    <el-dialog title="新增/编辑"
+      :visible.sync="addEditDialogVisible"
+      width="80%">
+      <!-- 学校详情 -->
+      <el-form ref="infoForm"
+        :model="infoForm"
+        :rules="rules"
+        label-width="80px">
+        <el-form-item prop="title"
+          label="标题：">
+          <el-input v-model="infoForm.title"></el-input>
+        </el-form-item>
+        <el-form-item prop="cover"
+          label="封面：">
+          <el-upload class="avatar-uploader"
+            action="/admin/upload"
+            :headers="headers"
+            :show-file-list="false"
+            :on-success="handleCoverSuccess"
+            :on-remove="handleCoverRemove"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="cover"
+              :src="cover"
+              class="avatar">
+            <i v-else
+              class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item prop="extCover"
+          label="配图：">
+          <el-upload action="/admin/upload"
+            list-type="picture-card"
+            :headers="headers"
+            :file-list="extCoverList"
+            :on-success="handleExtCoverSuccess"
+            :on-remove="handleExtCoverRemove"
+            :on-preview="handlePictureCardPreview"
+            :before-upload="beforeAvatarUpload">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item prop="schoolIdList"
+          label="范围：">
+          <el-select v-model="infoForm.area"
+            v-if="isEdit===false"
+            @change="getSchoolList"
+            placeholder="请选择区域">
+            <el-option key="0"
+              label="全部"
+              value="0"></el-option>
+            <el-option key="1"
+              label="澳门"
+              value="澳门"></el-option>
+            <el-option key="2"
+              label="珠海"
+              value="珠海"></el-option>
+            <el-option key="3"
+              label="香港"
+              value="香港"></el-option>
+          </el-select>
+          <el-select v-model="schoolIdList"
+            :disabled="isEdit"
+            multiple
+            placeholder="请选择学校">
+            <el-option key="0"
+              label="全部"
+              value="0"></el-option>
+            <el-option v-for="school in schoolList"
+              :key="school.id"
+              :label="school.name"
+              :value="school.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="content"
+          label="正文">
+          <vue-editor useCustomImageHandler
+            @imageAdded="handleImageAdded"
+            v-model="infoForm.content"></vue-editor>
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button @click="addEditDialogVisible = false">关闭</el-button>
+        <el-button type="primary"
+          v-if="isEdit"
+          @click="handleSubmitUpdate">提交</el-button>
+        <el-button type="primary"
+          v-else
+          @click="handleSubmitSave">确定</el-button>
+      </span>
+    </el-dialog>
 
+    <el-dialog :visible.sync="dialogImgVisible"
+      size="tiny">
+      <img width="100%"
+        :src="dialogImageUrl"
+        alt="">
+    </el-dialog>
 
-<el-dialog title="新增/编辑" :visible.sync="addEditDialogVisible" width="80%" >
-  <!-- 学校详情 -->
- <el-form ref="infoForm" :model="infoForm" :rules="rules" label-width="80px">
-	<el-form-item prop="title" label="標題：">
-	  <el-input v-model="infoForm.title"></el-input>
-	</el-form-item>
-	<el-form-item prop="cover" label="封面：">
-    <el-upload
-      class="avatar-uploader"
-      action="/admin/upload"
-      :headers="headers"
-      :show-file-list="false"
-      :on-success="handleCoverSuccess"
-      :on-remove="handleCoverRemove"
-      :before-upload="beforeAvatarUpload">
-      <img v-if="cover" :src="cover" class="avatar">
-      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-    </el-upload>
-	</el-form-item>
-  <el-form-item prop="extCover" label="配圖：">
-    <el-upload
-      action="/admin/upload"
-      list-type="picture-card"
-      :headers="headers"
-      :file-list="extCoverList"
-      :on-success="handleExtCoverSuccess"
-      :on-remove="handleExtCoverRemove"
-      :on-preview="handlePictureCardPreview"
-      :before-upload="beforeAvatarUpload"
-      >
-      <i class="el-icon-plus"></i>
-    </el-upload>
-	</el-form-item>
-  <el-form-item prop="schoolIdList" label="範圍：">
-		 <el-select v-model="infoForm.area" v-if="isEdit===false"  @change="getSchoolList" placeholder="請選擇區域">
-      <el-option  key="0" label="全部" value="0"></el-option>  
-      <el-option  key="1" label="澳門" value="澳門"></el-option>  
-      <el-option  key="2" label="珠海" value="珠海"></el-option>  
-      <el-option  key="3" label="香港" value="香港"></el-option>  
-    </el-select>
-     <el-select v-model="schoolIdList" :disabled="isEdit" multiple placeholder="請選擇學校">
-      <el-option  key="0" label="全部" value="0"></el-option>  
-      <el-option v-for="school in schoolList":key="school.id" :label="school.name" :value="school.id"></el-option>
-    </el-select>
-	</el-form-item>
-  <el-form-item prop="content" label="正文">
-      <vue-editor useCustomImageHandler  @imageAdded="handleImageAdded" v-model="infoForm.content"></vue-editor>
-	</el-form-item>
-</el-form>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="addEditDialogVisible = false">關閉</el-button>
-    <el-button type="primary" v-if="isEdit" @click="handleSubmitUpdate">提 交</el-button>
-    <el-button type="primary" v-else @click="handleSubmitSave">確 定</el-button>
-  </span>
-</el-dialog>
-
-
-<el-dialog :visible.sync="dialogImgVisible" size="tiny">
-  <img width="100%" :src="dialogImageUrl" alt="">
-</el-dialog>
-
-</div>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -152,18 +215,18 @@ export default {
         area: ""
       },
       rules: {
-        title: [{ required: true, message: "請輸入學校名稱", trigger: "blur" }],
-        cover: [{ required: true, message: "請上傳封面", trigger: "change" }],
-        area: [{ required: true, message: "請選擇推送範圍", trigger: "change" }],
+        title: [{ required: true, message: "请输入学校名称", trigger: "blur" }],
+        cover: [{ required: true, message: "请上传封面", trigger: "change" }],
+        area: [{ required: true, message: "请选择推送范围", trigger: "change" }],
         content: [
-          { required: true, message: "請輸入正文", trigger: "blur" },
-          { min: 20, message: "長度不能少於20個字符", trigger: "blur" }
+          { required: true, message: "请输入正文", trigger: "blur" },
+          { min: 20, message: "长度不能少于20个字符", trigger: "blur" }
         ]
       },
       tableData: []
     };
   },
-  created() {},
+  created() { },
   mounted() {
     this.getList();
   },
@@ -175,35 +238,35 @@ export default {
     }
   },
   methods: {
-    handleSizeChange: function(val) {
+    handleSizeChange: function (val) {
       this.page.pageSize = val;
       this.getList();
     },
-    handleCoverCardPreview: function(val) {
+    handleCoverCardPreview: function (val) {
       this.dialogImageUrl = val;
       this.dialogImgVisible = true;
     },
-    handleCurrentChange: function(val) {
+    handleCurrentChange: function (val) {
       this.pageNumber = val;
       this.getList();
     },
-    formatDateJoinAt: function(row, column) {
+    formatDateJoinAt: function (row, column) {
       return this.$moment(row.joinAt).format("YYYY-MM-DD");
     },
-    formatDateNextPayAt: function(row, column) {
+    formatDateNextPayAt: function (row, column) {
       return this.$moment(row.nextPayAt).format("YYYY-MM-DD");
     },
-    handleSearch: function() {
+    handleSearch: function () {
       this.getList();
     },
-    handleAdd: function() {
+    handleAdd: function () {
       this.isEdit = false;
       this.cover = "";
       this.extCoverList = [];
       this.infoForm = Object.assign({}, null);
       this.addEditDialogVisible = true;
     },
-    handleEdit: function(index, row) {
+    handleEdit: function (index, row) {
       this.cover = "";
       this.extCoverList = [];
       this.isEdit = true;
@@ -219,38 +282,38 @@ export default {
       this.getSchoolList(0);
       this.addEditDialogVisible = true;
     },
-    handlePictureCardPreview: function(file) {
+    handlePictureCardPreview: function (file) {
       this.dialogImageUrl = file.url;
       this.dialogImgVisible = true;
     },
-    handleExtCoverSuccess: function(res, file) {
+    handleExtCoverSuccess: function (res, file) {
       this.extCoverList.push(res.file);
       this.infoForm.extCoverList = this.extCoverList;
     },
-    handleExtCoverRemove: function(file, fileList) {
+    handleExtCoverRemove: function (file, fileList) {
       this.infoForm.extCoverList = this.extCoverList;
     },
-    handleCoverRemove: function(file, fileList) {
+    handleCoverRemove: function (file, fileList) {
       this.infoForm.cover = "";
     },
-    handleCoverSuccess: function(res, file) {
+    handleCoverSuccess: function (res, file) {
       this.cover = res.file.url;
       this.infoForm.cover = res.file.url;
     },
-    beforeAvatarUpload: function(file) {
+    beforeAvatarUpload: function (file) {
       const isJPG = file.type === "image/jpeg" || "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error("上传图片只能是 JPG或者 png 格式!");
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传图片大小不能超过 2MB!");
       }
       if (isJPG && isLt2M) {
       }
       return isJPG && isLt2M;
     },
-    handleImageAdded: function(file, Editor, cursorLocation) {
+    handleImageAdded: function (file, Editor, cursorLocation) {
       upload(file, "/admin/upload")
         .then(result => {
           var url = result.data.file.url; // Get url from response
@@ -263,7 +326,7 @@ export default {
           console.log(err);
         });
     },
-    handleSubmitSave: function() {
+    handleSubmitSave: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
@@ -281,7 +344,7 @@ export default {
         }
       });
     },
-    handleSubmitUpdate: function() {
+    handleSubmitUpdate: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
@@ -298,8 +361,8 @@ export default {
         }
       });
     },
-    handleRemove: function(index, row) {
-      this.$confirm("確定刪除嗎？")
+    handleRemove: function (index, row) {
+      this.$confirm("确定删除吗？")
         .then(_ => {
           let id = row.id;
           remove(id)
@@ -311,10 +374,10 @@ export default {
               this.$message.error(error);
             });
         })
-        .catch(_ => {});
+        .catch(_ => { });
     },
-    handleDownShelf: function(index, row) {
-      this.$confirm("確定下架嗎？")
+    handleDownShelf: function (index, row) {
+      this.$confirm("确定下架吗？")
         .then(_ => {
           let id = row.id;
           downShelf(id)
@@ -327,9 +390,9 @@ export default {
               this.$message.error(error);
             });
         })
-        .catch(_ => {});
+        .catch(_ => { });
     },
-    getList: function() {
+    getList: function () {
       let params = {
         title: this.query.title,
         pageNumber: this.page.pageNumber,
@@ -347,7 +410,7 @@ export default {
           console.log(error);
         });
     },
-    getSchoolList: function(val) {
+    getSchoolList: function (val) {
       let params = {
         area: val
       };

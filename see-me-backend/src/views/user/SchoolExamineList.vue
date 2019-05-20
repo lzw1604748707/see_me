@@ -1,38 +1,62 @@
 <template>
-<div>
-<!-- 搜索 -->
-<el-form inline :model="query" label-position="right" label-width="60px" class="query-form">
-  <el-select v-model="selectSchoolId" style="margin-left:10px;">
-    <el-option key="0" label="請選擇學校" value=""></el-option>
-    <el-option v-for="school in schoolList" :key="school.id" :label="school.name" :value="school.id"></el-option>
-  </el-select>
-  <el-form-item>
-    <el-button type="primary" @click="handleSearch">搜索</el-button>
-  </el-form-item>
-</el-form>
-<!-- 数据表格 -->
-<el-table :data="tableData" class="table" stripe border v-loading="loading">
-  <el-table-column type="index" label="序號"  width="70"></el-table-column>
-  <el-table-column prop="area" label="區域"></el-table-column>
-  <el-table-column prop="name" label="學校名稱"></el-table-column>
-  <el-table-column prop="updateAt" label="更新时间"></el-table-column>
-  <el-table-column label="操作" width="100" >
-    <template slot-scope="scope">
-      <el-button size="mini" type="info" @click="handleRead(scope.$index, scope.row)">查看</el-button>
-    </template>
-  </el-table-column>
-</el-table>
+  <div>
+    <!-- 搜索 -->
+    <el-form inline
+      :model="query"
+      label-position="right"
+      label-width="60px"
+      class="query-form">
+      <el-select v-model="selectSchoolId"
+        style="margin-left:10px;">
+        <el-option key="0"
+          label="请选择学校"
+          value=""></el-option>
+        <el-option v-for="school in schoolList"
+          :key="school.id"
+          :label="school.name"
+          :value="school.id"></el-option>
+      </el-select>
+      <el-form-item>
+        <el-button type="primary"
+          @click="handleSearch">搜索</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- 数据表格 -->
+    <el-table :data="tableData"
+      class="table"
+      stripe
+      border
+      v-loading="loading">
+      <el-table-column type="index"
+        label="序号"
+        width="70"></el-table-column>
+      <el-table-column prop="area"
+        label="区域"></el-table-column>
+      <el-table-column prop="name"
+        label="学校名称"></el-table-column>
+      <el-table-column prop="updateAt"
+        label="更新时间"></el-table-column>
+      <el-table-column label="操作"
+        width="100">
+        <template slot-scope="scope">
+          <el-button size="mini"
+            type="info"
+            @click="handleRead(scope.$index, scope.row)">查看</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
+    <el-dialog title="查看"
+      :visible.sync="infoDialogVisible"
+      width="800px">
+      <vue-editor v-model="infoForm.content"></vue-editor>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button @click="infoDialogVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
 
-<el-dialog title="查看" :visible.sync="infoDialogVisible" width="800px" >
-  <vue-editor v-model="infoForm.content"></vue-editor>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="infoDialogVisible = false">關閉</el-button>
-  </span>
-</el-dialog>
-
-
-</div>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -54,29 +78,29 @@ export default {
       tableData: []
     };
   },
-  created() {},
+  created() { },
   mounted() {
     this.getList();
     this.getSchoolList();
   },
   watch: {},
   methods: {
-    handleSizeChange: function(val) {
+    handleSizeChange: function (val) {
       this.page.pageSize = val;
       this.getList();
     },
-    handleCurrentChange: function(val) {
+    handleCurrentChange: function (val) {
       this.pageNumber = val;
       this.getList();
     },
-    handleSearch: function() {
+    handleSearch: function () {
       this.getList();
     },
-    handleRead: function(index, row) {
+    handleRead: function (index, row) {
       this.infoForm = Object.assign({}, row);
       this.infoDialogVisible = true;
     },
-    getList: function() {
+    getList: function () {
       let params = {
         schoolId: this.selectSchoolId
       };
@@ -92,7 +116,7 @@ export default {
           console.log(error);
         });
     },
-    handlePass: function() {
+    handlePass: function () {
       pass()
         .then(res => {
           this.schoolList = res.data.schoolList;
@@ -102,7 +126,7 @@ export default {
           console.log(error);
         });
     },
-    handleReject: function() {
+    handleReject: function () {
       reject()
         .then(res => {
           this.schoolList = res.data.schoolList;
@@ -112,7 +136,7 @@ export default {
           console.log(error);
         });
     },
-    getSchoolList: function() {
+    getSchoolList: function () {
       schoolList()
         .then(res => {
           this.schoolList = res.data.schoolList;
@@ -127,5 +151,4 @@ export default {
 </script>
 
 <style>
-
 </style>

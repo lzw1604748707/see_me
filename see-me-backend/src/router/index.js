@@ -12,18 +12,18 @@ Vue.use(Router)
 export const constantRouterMap = [{
         path: '/admin',
         component: Layout,
-        name: '首頁',
+        name: '首页',
         icon: 'el-icon-menu',
         redirect: '/admin/dashboard',
         noDropdown: true,
         children: [{
             path: 'dashboard',
             component: resolve => require(['../views/dashboard'], resolve),
-            name: '首頁'
+            name: '首页'
         }]
     }, {
         path: '/admin/login',
-        name: '登陸',
+        name: '登陆',
         hidden: true,
         component: Login
     },
@@ -34,32 +34,32 @@ export const constantRouterMap = [{
 export const asyncRouterMap = [{
     path: '/admin/user',
     component: Layout,
-    name: '用戶管理',
+    name: '用户管理',
     redirect: "noredirect",
     icon: 'el-icon-date',
     children: [{
             path: 'school',
-            name: '學校列表',
+            name: '学校列表',
             component: resolve => require(['../views/user/SchoolList.vue'], resolve)
         },
         {
             path: 'schoolcheck',
-            name: '學校介紹審核',
+            name: '学校介绍审核',
             component: resolve => require(['../views/user/SchoolExamineList.vue'], resolve)
         },
         {
             path: 'student',
-            name: '學生列表',
+            name: '学生列表',
             component: resolve => require(['../views/user/StudentList.vue'], resolve)
         },
         {
             path: 'teacher',
-            name: '教師列表',
+            name: '教师列表',
             component: resolve => require(['../views/user/TeacherList.vue'], resolve)
         },
         {
             path: 'parent',
-            name: '家長列表',
+            name: '家长列表',
             component: resolve => require(['../views/user/ParentList.vue'], resolve)
         }
     ]
@@ -71,45 +71,45 @@ export const asyncRouterMap = [{
     icon: 'el-icon-picture',
     children: [{
             path: 'information',
-            name: '資訊列表',
+            name: '资讯列表',
             component: resolve => require(['../views/info/InfoList.vue'], resolve)
         },
         {
             path: 'startpage',
-            name: '啟動頁管理',
+            name: '启动页管理',
             component: resolve => require(['../views/info/StartPage.vue'], resolve)
         },
         {
             path: 'adv',
-            name: '廣告列表',
+            name: '广告列表',
             component: resolve => require(['../views/info/AdvList.vue'], resolve)
         }
     ]
 }, {
     path: '/admin/feedback',
     component: Layout,
-    name: '意見反饋',
+    name: '意见反馈',
     redirect: "noredirect",
     icon: 'el-icon-message',
     children: [{
         path: 'list',
-        name: '意見列表',
+        name: '意见列表',
         component: resolve => require(['../views/feeback/FeebackList.vue'], resolve)
     }]
 }, {
     path: '/admin/auth',
     component: Layout,
-    name: '管理員管理',
+    name: '管理员管理',
     redirect: "noredirect",
     icon: 'el-icon-setting',
     children: [{
             path: 'account',
-            name: '管理員列表',
+            name: '管理员列表',
             component: resolve => require(['../views/auth/AccountList.vue'], resolve)
         },
         {
             path: 'role',
-            name: '權限管理',
+            name: '权限管理',
             component: resolve => require(['../views/auth/RoleList.vue'], resolve)
         }
     ]

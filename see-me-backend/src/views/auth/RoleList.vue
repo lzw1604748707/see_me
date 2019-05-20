@@ -1,49 +1,80 @@
 <template>
-<div>
-<!-- 搜索 -->
-<el-form inline label-position="right" label-width="60px" class="query-form">
-  <el-form-item>
-    <el-button type="primary" @click="handleAdd">添加權限組</el-button>
-  </el-form-item>
-</el-form>
-<!-- 数据表格 -->
-<el-table :data="tableData" class="table" stripe border v-loading="loading">
-  <el-table-column type="index" label="序號"  width="70"></el-table-column>
-  <el-table-column prop="name" label="權限組"></el-table-column>
-  <el-table-column prop="roleAccount" label="管理員數量"></el-table-column>
-  <el-table-column prop="createAt" label="添加時間"> </el-table-column>
-  <el-table-column label="操作">
-    <template slot-scope="scope">
-      <el-button size="mini" type="info" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-      <el-button size="mini" type="danger" @click="handleRemove(scope.$index, scope.row)">删除</el-button>
-    </template>
-  </el-table-column>
-</el-table>
+  <div>
+    <!-- 搜索 -->
+    <el-form inline
+      label-position="right"
+      label-width="60px"
+      class="query-form">
+      <el-form-item>
+        <el-button type="primary"
+          @click="handleAdd">添加权限组</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- 数据表格 -->
+    <el-table :data="tableData"
+      class="table"
+      stripe
+      border
+      v-loading="loading">
+      <el-table-column type="index"
+        label="序号"
+        width="70"></el-table-column>
+      <el-table-column prop="name"
+        label="权限组"></el-table-column>
+      <el-table-column prop="roleAccount"
+        label="管理员数量"></el-table-column>
+      <el-table-column prop="createAt"
+        label="添加时间"> </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini"
+            type="info"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini"
+            type="danger"
+            @click="handleRemove(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
+    <el-dialog title="新增/编辑"
+      :visible.sync="addEditDialogVisible"
+      width="800px">
+      <!-- 学校详情 -->
+      <el-form ref="infoForm"
+        :model="infoForm"
+        :rules="rules"
+        label-width="120px">
+        <el-form-item prop="name"
+          label="权限组名称：">
+          <el-input v-model="infoForm.name"></el-input>
+        </el-form-item>
+        <el-form-item prop="menus"
+          label="权限：">
+          <el-tree :data="menus"
+            show-checkbox
+            expand-on-click-node
+            node-key="id"
+            ref="tree"
+            :default-expanded-keys="infoForm.menus"
+            :default-checked-keys="infoForm.menus"
+            :props="defaultProps">
+          </el-tree>
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button @click="addEditDialogVisible = false">关闭</el-button>
+        <el-button type="primary"
+          v-if="isEdit"
+          @click="handleSubmitUpdate">提交</el-button>
+        <el-button type="primary"
+          v-else
+          @click="handleSubmitSave">确定</el-button>
+      </span>
+    </el-dialog>
 
-<el-dialog title="新增/编辑" :visible.sync="addEditDialogVisible" width="800px" >
-  <!-- 学校详情 -->
- <el-form ref="infoForm" :model="infoForm" :rules="rules" label-width="120px">
-	<el-form-item prop="name" label="權限組名稱：">
-	  <el-input v-model="infoForm.name"></el-input>
-	</el-form-item>
-	<el-form-item prop="menus" label="權限：">
-   <el-tree :data="menus" show-checkbox expand-on-click-node node-key="id" ref="tree" 
-      :default-expanded-keys="infoForm.menus" 
-      :default-checked-keys="infoForm.menus" 
-      :props="defaultProps">
-   </el-tree>
-	</el-form-item>
-</el-form>
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="addEditDialogVisible = false">關閉</el-button>
-    <el-button type="primary" v-if="isEdit" @click="handleSubmitUpdate">提 交</el-button>
-    <el-button type="primary" v-else @click="handleSubmitSave">確 定</el-button>
-  </span>
-</el-dialog>
-
-
-</div>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -73,32 +104,32 @@ export default {
       },
       tableData: [],
       rules: {
-        name: [{ required: true, message: "請輸入名稱", trigger: "blur" }],
-        menus: [{ required: true, message: "請選擇", trigger: "blur" }]
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        menus: [{ required: true, message: "请选择", trigger: "blur" }]
       }
     };
   },
-  created() {},
+  created() { },
   mounted() {
     this.getList();
     this.getMenus();
   },
   watch: {},
   methods: {
-    handleSizeChange: function(val) {
+    handleSizeChange: function (val) {
       this.page.pageSize = val;
       this.getList();
     },
-    handleCurrentChange: function(val) {
+    handleCurrentChange: function (val) {
       this.pageNumber = val;
       this.getList();
     },
-    handleAdd: function() {
+    handleAdd: function () {
       this.isEdit = false;
       this.addEditDialogVisible = true;
       this.infoForm = {};
     },
-    handleEdit: function(index, row) {
+    handleEdit: function (index, row) {
       this.isEdit = true;
       this.addEditDialogVisible = true;
       this.infoForm = Object.assign({}, row);
@@ -106,7 +137,7 @@ export default {
         this.$refs.tree.setCheckedKeys(row.menus);
       }, 100);
     },
-    getList: function() {
+    getList: function () {
       this.loading = true;
       list()
         .then(res => {
@@ -119,7 +150,7 @@ export default {
           console.log(error);
         });
     },
-    getMenus: function() {
+    getMenus: function () {
       getMenuList()
         .then(res => {
           this.menus = res.data.list;
@@ -129,7 +160,7 @@ export default {
           console.log(error);
         });
     },
-    handleSubmitSave: function() {
+    handleSubmitSave: function () {
       this.infoForm.menus = this.$refs.tree.getCheckedKeys();
       this.$refs.infoForm.validate(valid => {
         if (valid) {
@@ -147,7 +178,7 @@ export default {
         }
       });
     },
-    handleSubmitUpdate: function() {
+    handleSubmitUpdate: function () {
       this.infoForm.menus = this.$refs.tree.getCheckedKeys();
       this.$refs.infoForm.validate(valid => {
         if (valid) {
@@ -165,8 +196,8 @@ export default {
         }
       });
     },
-    handleRemove: function(index, row) {
-      this.$confirm("確定刪除嗎？")
+    handleRemove: function (index, row) {
+      this.$confirm("确认删除吗？")
         .then(_ => {
           let id = row.id;
           remove(id)
@@ -178,12 +209,11 @@ export default {
               this.$message.error(error);
             });
         })
-        .catch(_ => {});
+        .catch(_ => { });
     }
   }
 };
 </script>
 
 <style>
-
 </style>

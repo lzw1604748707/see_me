@@ -1,49 +1,64 @@
 <template>
-<div class="startpage">
-  <el-form label-width="80px">
-		<el-card class="box-card">
-			<div slot="header" class="clearfix">
-				<span>家長端APP</span>
-        <el-button style="float: right; padding: 3px 0"  type="primary" @click="hanleSubmitParent">提交</el-button>
-			</div>
-			<el-form-item  label="封面：" required>
-				<el-upload class="avatar-uploader" 
-          action="/admin/upload" 
-          :headers="headers" 
-          :show-file-list="false" 
-          :on-success="handleParentSuccess"
-          :before-upload="beforeAvatarUpload">
-					<img v-if="parentCover" :src="parentCover" class="avatar">
-					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
-				</el-upload>
-			</el-form-item>
-      <el-form-item label="外鏈：" required>
-        <el-input v-model="parentUrl"></el-input>
-      </el-form-item>
-		</el-card>
+  <div class="startpage">
+    <el-form label-width="80px">
+      <el-card class="box-card">
+        <div slot="header"
+          class="clearfix">
+          <span>家长端APP</span>
+          <el-button style="float: right; padding: 3px 0"
+            type="primary"
+            @click="hanleSubmitParent">提交</el-button>
+        </div>
+        <el-form-item label="封面："
+          required>
+          <el-upload class="avatar-uploader"
+            action="/admin/upload"
+            :headers="headers"
+            :show-file-list="false"
+            :on-success="handleParentSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="parentCover"
+              :src="parentCover"
+              class="avatar">
+            <i v-else
+              class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="外链："
+          required>
+          <el-input v-model="parentUrl"></el-input>
+        </el-form-item>
+      </el-card>
 
-		<el-card class="box-card" style="margin-top:10px;">
-			<div slot="header" class="clearfix">
-				<span>教师端APP</span>
-        <el-button style="float: right; padding: 3px 0"  type="primary"  @click="hanleSubmitTeacher">提交</el-button>
-			</div>
-		  <el-form-item label="封面：">
-				<el-upload class="avatar-uploader" 
-          action="/admin/upload" 
-          :headers="headers" 
-          :show-file-list="false" 
-          :on-success="handleTeacherSuccess"
-          :before-upload="beforeAvatarUpload">
-					<img v-if="teacherCover" :src="teacherCover" class="avatar">
-					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
-				</el-upload>
-			</el-form-item>
-      <el-form-item label="外鏈：">
-        <el-input v-model="teacherUrl"></el-input>
-      </el-form-item>
-		</el-card>
-	</el-form>
-</div>
+      <el-card class="box-card"
+        style="margin-top:10px;">
+        <div slot="header"
+          class="clearfix">
+          <span>教师端APP</span>
+          <el-button style="float: right; padding: 3px 0"
+            type="primary"
+            @click="hanleSubmitTeacher">提交</el-button>
+        </div>
+        <el-form-item label="封面：">
+          <el-upload class="avatar-uploader"
+            action="/admin/upload"
+            :headers="headers"
+            :show-file-list="false"
+            :on-success="handleTeacherSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="teacherCover"
+              :src="teacherCover"
+              class="avatar">
+            <i v-else
+              class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="外链：">
+          <el-input v-model="teacherUrl"></el-input>
+        </el-form-item>
+      </el-card>
+    </el-form>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -59,7 +74,7 @@ export default {
       tableData: []
     };
   },
-  created() {},
+  created() { },
   mounted() {
     this.getCover();
   },
@@ -71,28 +86,28 @@ export default {
     }
   },
   methods: {
-    handleParentSuccess: function(res, file) {
+    handleParentSuccess: function (res, file) {
       this.parentCover = res.file.url;
     },
-    handleTeacherSuccess: function(res, file) {
+    handleTeacherSuccess: function (res, file) {
       this.teacherCover = res.file.url;
     },
-    beforeAvatarUpload: function(file) {
+    beforeAvatarUpload: function (file) {
       const isJPG = file.type === "image/jpeg" || "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error("上传图片只能是 JPG 或 png 格式!");
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传图片大小不能超过 2MB!");
       }
       if (isJPG && isLt2M) {
       }
       return isJPG && isLt2M;
     },
-    hanleSubmitParent: function() {
+    hanleSubmitParent: function () {
       if (!this.parentCover || !this.parentUrl) {
-        this.$message.error("請上傳啟動頁和填寫外鏈");
+        this.$message.error("请上传启动页并填写外链");
         return;
       }
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
@@ -108,9 +123,9 @@ export default {
         });
       });
     },
-    hanleSubmitTeacher: function() {
+    hanleSubmitTeacher: function () {
       if (!this.teacherCover || !this.teacherUrl) {
-        this.$message.error("請上傳啟動頁和填寫外鏈");
+        this.$message.error("请上传启动页并填写外链");
         return;
       }
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
@@ -126,7 +141,7 @@ export default {
         });
       });
     },
-    getCover: function(val) {
+    getCover: function (val) {
       getCover()
         .then(res => {
           if (res.data.parent) {

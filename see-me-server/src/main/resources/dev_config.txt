@@ -1,0 +1,7 @@
+#数据库配置
+dbType=mysql
+jdbcUrl = jdbc:mysql://localhost/see_me?useSSL=FALSE&serverTimezone=UTC
+user = root
+password =123456
+#开发模式
+devMode =true

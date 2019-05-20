@@ -1,0 +1,8 @@
+/target/
+/.settings/
+/jxt.log
+/admin-web/node_modules/
+/.idea/
+.idea/inspectionProfiles/
+.idea/workspace.xml
+

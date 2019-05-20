@@ -1,0 +1,160 @@
+<template>
+<div>
+<!-- 搜索 -->
+<el-form inline :model="query" label-position="right" label-width="60px" class="query-form">
+  <el-select v-model="selectSchoolId" placeholder="請選擇學校" style="margin-left:10px;">
+    <el-option key="0" label="請選擇學校" value=""></el-option>
+    <el-option v-for="school in schoolList" :key="school.id" :label="school.name" :value="school.id"></el-option>
+  </el-select>
+   <el-select v-model="selectGradeId" placeholder="請選擇年級">
+    <el-option key="0" label="請選擇年級" value=""></el-option>
+    <el-option v-for="grade in gradeList":key="grade.id" :label="grade.name" :value="grade.id"></el-option>
+  </el-select>
+  <el-input v-model="query.name" placeholder="請輸入學校姓名" style="width:150px;" ></el-input>
+  <el-input v-model="query.studentCode" placeholder="請輸入學籍號" style="width:150px;" ></el-input>
+  <el-form-item>
+    <el-button type="primary" @click="handleSearch">搜索</el-button>
+  </el-form-item>
+</el-form>
+<!-- 数据表格 -->
+<el-table :data="tableData" class="table" stripe border v-loading="loading">
+  <el-table-column type="index" label="序號"  width="70"></el-table-column>
+  <el-table-column prop="name" label="名稱"></el-table-column>
+  <el-table-column prop="phone" label="手機"></el-table-column>
+  <el-table-column prop="sex" label="性別">
+    <template  slot-scope="scope">
+      <span v-if="scope.row.sex === 1">男</span>
+      <span v-else>女</span>
+    </template>
+  </el-table-column>
+  <el-table-column prop="studentCode" label="學籍號"></el-table-column>
+  <el-table-column prop="schoolName" label="所屬學校"></el-table-column>
+  <el-table-column prop="gradeName" label="年級"></el-table-column>
+  <el-table-column prop="className" label="班級"></el-table-column>
+  <el-table-column prop="parentCount" label="家長賬號數量"></el-table-column>
+</el-table>
+<!-- 分页组件 -->
+<el-pagination
+  @size-change="handleSizeChange"
+  @current-change="handleCurrentChange"
+  :current-page="page.pageNumber"
+  :page-sizes="[10, 20, 30, 40]"
+  :page-size="page.pageSize"
+  layout="total, sizes, prev, pager, next, jumper"
+  :total="page.total">
+</el-pagination>
+
+</div>
+</template>
+
+<script type="text/ecmascript-6">
+import { list, gradeList, schoolList } from "@/api/student_list";
+
+export default {
+  data() {
+    return {
+      query: {
+        name: "",
+        schoolId: "",
+        gradeId: "",
+        studentCode: ""
+      },
+      loading: false,
+      page: {
+        pageNumber: 1,
+        pageSize: 10,
+        total: 0
+      },
+      selectSchoolId: this.$route.query.schoolId
+        ? this.$route.query.schoolId * 1
+        : "",
+      schoolList: [],
+      selectGradeId: "",
+      gradeList: [],
+      tableData: []
+    };
+  },
+  created() {},
+  mounted() {
+    this.getList();
+    this.getSchoolList();
+
+    if (this.selectSchoolId) {
+      this.getGradelList();
+    }
+  },
+  watch: {
+    selectSchoolId(newVal, oldVal) {
+      this.gradeList = [];
+      this.selectGradeId = "";
+      if (newVal) {
+        this.getGradelList();
+      }
+    }
+  },
+  methods: {
+    handleSizeChange: function(val) {
+      this.page.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange: function(val) {
+      this.pageNumber = val;
+      this.getList();
+    },
+    handleSearch: function() {
+      this.getList();
+    },
+    getList: function() {
+      let params = {
+        name: this.query.name,
+        pageNumber: this.page.pageNumber,
+        studentCode: this.query.studentCode,
+        pageSize: this.page.pageSize,
+        schoolId: this.selectSchoolId,
+        gradeId: this.selectGradeId
+      };
+      this.loading = true;
+      list(params)
+        .then(res => {
+          this.tableData = res.data.page.list;
+          this.page.pageNumber = res.data.page.pageNumber;
+          this.page.pageSize = res.data.page.pageSize;
+          this.page.total = res.data.page.totalRow;
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          this.$message.error(error);
+          console.log(error);
+        });
+    },
+    getSchoolList: function() {
+      schoolList()
+        .then(res => {
+          this.schoolList = res.data.schoolList;
+        })
+        .catch(error => {
+          this.$message.error(error);
+          console.log(error);
+        });
+    },
+    getGradelList: function() {
+      let params = {
+        schoolId: this.selectSchoolId
+      };
+      gradeList(params)
+        .then(res => {
+          this.gradeList = res.data.gradeList;
+        })
+        .catch(error => {
+          this.$message.error(error);
+          console.log(error);
+        });
+    }
+  }
+};
+</script>
+
+<style>
+
+</style>

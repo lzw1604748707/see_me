@@ -1,0 +1,23 @@
+/*超行溢出显示省略号*/
+@mixin overflow($num: 1, $fontSize: 0, $lineHeight: 1.5) {
+  display: -webkit-box;
+  -webkit-line-clamp: $num;
+  overflow: hidden;
+  /* autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  @if $fontSize!=0 and $lineHeight {
+    /*高度需要撑开*/
+    line-height: $lineHeight;
+    @if $lineHeight < 1.2 {
+      line-height: 1.2; /*最小需要1.2，否则在部分安卓机下第$num+1行会顶部漏出*/
+    }
+    height: $num * $fontSize * $lineHeight;
+    [data-dpr='2'] & {
+      height: $num * $fontSize * $lineHeight * 2 !important;
+    }
+    [data-dpr='3'] & {
+      height: $num * $fontSize * $lineHeight * 3 !important;
+    }
+  }
+}

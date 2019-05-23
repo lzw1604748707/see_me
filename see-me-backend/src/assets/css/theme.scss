@@ -1,0 +1,37 @@
+
+// 主体背景色
+$--color-primary: #00a650 !default;
+
+//深色主题
+$--color-deep-primary:#009999;
+
+//浅色主题
+$--color-light-primary:#f5fff5;
+
+$--color-shdow-primary:#ddd;
+
+// 次级颜色
+$--color-secondary: #fff;
+
+// 文字颜色
+$--color-text-primary: #333333 !default;
+$--color-text-regular: #666666 !default;
+$--color-text-secondary: #999999 !default;
+$--color-text-placeholder: #9f9f9f !default;
+// 警告
+$--color-warning: #f5a623 !default;
+$--color-danger: rgb(255, 63, 29) !default;
+
+// 分割线、边框颜色
+$--background-color-base: #ececec !default;
+// 页面底色
+$--border-color-base: #f5f5f5 !default;
+
+// 边框线
+$--border-color-regular: #c9c9c9 !default;
+$--border-color-dark: #e5e5e5 !default;
+$--border-bg-base: #ffffff !default;
+// banner背景渐变开始颜色
+$--banner-begin-background: #74efa8;
+// banner背景渐变结束颜色
+$--banner-end-background: #00a650;

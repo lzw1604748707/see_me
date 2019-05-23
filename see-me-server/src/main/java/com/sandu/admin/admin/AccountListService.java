@@ -20,7 +20,7 @@ public class AccountListService {
 		Page<SysAccount> page = dao.paginate(pageNumber, pageSize, dao.getSqlPara("sys_account.admin-paginate", kv));
 		for (SysAccount account : page.getList()) {
 			if (account.isSysAdmin()) {
-				account.put("roleName", "超級管理員");
+				account.put("roleName", "超级管理员");
 			}
 		}
 		return page;

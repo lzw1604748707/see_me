@@ -37,30 +37,31 @@ export const asyncRouterMap = [{
     name: '用户管理',
     redirect: "noredirect",
     icon: 'el-icon-date',
-    children: [{
-            path: 'school',
-            name: '学校列表',
-            component: resolve => require(['../views/user/SchoolList.vue'], resolve)
+    children: [
+        {
+            path: 'account',
+            name: '用户列表',
+            component: resolve => require(['../views/user/AccountList.vue'], resolve)
         },
         {
-            path: 'schoolcheck',
-            name: '学校介绍审核',
-            component: resolve => require(['../views/user/SchoolExamineList.vue'], resolve)
+            path: 'project',
+            name: '项目列表',
+            component: resolve => require(['../views/user/projectList.vue'], resolve)
         },
         {
-            path: 'student',
-            name: '学生列表',
-            component: resolve => require(['../views/user/StudentList.vue'], resolve)
+            path: 'comment',
+            name: '评论监管',
+            component: resolve => require(['../views/user/commentList.vue'], resolve)
         },
         {
-            path: 'teacher',
-            name: '教师列表',
-            component: resolve => require(['../views/user/TeacherList.vue'], resolve)
+            path: 'collection',
+            name: '作品集列表',
+            component: resolve => require(['../views/user/collectionList.vue'], resolve)
         },
         {
-            path: 'parent',
-            name: '家长列表',
-            component: resolve => require(['../views/user/ParentList.vue'], resolve)
+            path: 'createfield',
+            name: '创作领域列表',
+            component: resolve => require(['../views/user/createFieldList.vue'], resolve)
         }
     ]
 }, {
@@ -73,11 +74,6 @@ export const asyncRouterMap = [{
             path: 'information',
             name: '资讯列表',
             component: resolve => require(['../views/info/InfoList.vue'], resolve)
-        },
-        {
-            path: 'startpage',
-            name: '启动页管理',
-            component: resolve => require(['../views/info/StartPage.vue'], resolve)
         },
         {
             path: 'adv',

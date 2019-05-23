@@ -136,7 +136,7 @@ export default {
       tableData: [],
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
-        username: [{ required: true, message: "请输入登陆账户", trigger: "blur" }],
+        username: [{ required: true, message: "请输入所在地", trigger: "blur" }],
         roleId: [{ required: true, message: "请选择权限组" }]
       }
     };

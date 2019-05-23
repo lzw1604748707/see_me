@@ -1,15 +1,22 @@
 <template>
-  <el-header height="80px"
-    :style="{ 'background-color':'#5589B1' }">
-    <img src="../assets/element-logo.svg"
-      alt="element-logo"
-      class="header-logo">
-    <ul class="header-operations">
-      <li>欢迎你，{{this.$store.state.name}}</li>
-      <li @click="dialogVisible = true">修改密码</li>
-      <li @click="hanleLogOut">退出</li>
-      <!-- <li @click="showThemeDialog">切换主题色</li> -->
-    </ul>
+  <div>
+    <el-header class="header"
+      height="80px"
+      :style="{ 'background-color':'#08224a' }">
+      <div style="height:inherit; display:flex; align-items: center;">
+        <img src="../assets/logo.png"
+          alt="element-logo"
+          class="header-logo">
+        <span class="header__title">See Me backend</span>
+      </div>
+      <ul class="header-operations">
+        <li>欢迎你，{{this.$store.state.name}}</li>
+        <li @click="dialogVisible = true">修改密码</li>
+        <li @click="hanleLogOut">退出</li>
+        <!-- <li @click="showThemeDialog">切换主题色</li> -->
+      </ul>
+
+    </el-header>
 
     <el-dialog title="提示"
       :visible.sync="dialogVisible"
@@ -54,8 +61,7 @@
           @click="dialogVisible = false">确定</el-button>
       </span>
     </el-dialog>
-
-  </el-header>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -141,5 +147,15 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  &__title {
+    color: #ceffdd;
+    font-size: 30px;
+    margin-left: 30px;
+  }
+}
 </style>

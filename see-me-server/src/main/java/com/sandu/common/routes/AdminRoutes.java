@@ -9,14 +9,13 @@ import com.sandu.admin.common.interceptor.AdminLoginInterceptor;
 import com.sandu.admin.feeback.FeebackListController;
 import com.sandu.admin.info.AdvListController;
 import com.sandu.admin.info.InfoListController;
-import com.sandu.admin.info.StartPageController;
 import com.sandu.admin.login.LoginController;
 import com.sandu.admin.my.MyController;
-import com.sandu.admin.user.ParentListController;
-import com.sandu.admin.user.SchoolExamineListController;
-import com.sandu.admin.user.SchoolListController;
-import com.sandu.admin.user.StudentListController;
-import com.sandu.admin.user.TeacherListController;
+import com.sandu.admin.user.PhotoCollectionListController;
+import com.sandu.admin.user.PhotoCommentListController;
+import com.sandu.admin.user.PhotoFieldListController;
+import com.sandu.admin.user.PhotoProjectListController;
+import com.sandu.admin.user.UserListController;
 
 public class AdminRoutes extends Routes {
 
@@ -28,14 +27,13 @@ public class AdminRoutes extends Routes {
 		this.addInterceptor(new AdminAuthInterceptor());
 		//用户模块
 		this.add("/admin", IndexController.class);
-		this.add("/admin/user/school", SchoolListController.class);
-		this.add("/admin/user/student", StudentListController.class);
-		this.add("/admin/user/teacher", TeacherListController.class);
-		this.add("/admin/user/parent", ParentListController.class);
-		this.add("/admin/user/schoolcheck", SchoolExamineListController.class);
+		this.add("/admin/user/user", UserListController .class);
+		this.add("/admin/user/project", PhotoProjectListController .class);
+		this.add("/admin/user/collection", PhotoCollectionListController.class);
+		this.add("/admin/user/comment", PhotoCommentListController.class);
+		this.add("/admin/user/createfield", PhotoFieldListController.class);
 		//资讯模块
 		this.add("/admin/info/information", InfoListController.class);
-		this.add("/admin/info/startpage", StartPageController.class);
 		this.add("/admin/info/adv", AdvListController.class);
 		//意见反馈
 		this.add("/admin/feeback", FeebackListController.class);

@@ -13,7 +13,7 @@
         <el-button type="primary"
           @click="handleSearch">搜索</el-button>
         <el-button type="primary"
-          @click="handleAdd">添加咨询</el-button>
+          @click="handleAdd">添加资讯</el-button>
       </el-form-item>
     </el-form>
     <!-- 数据表格 -->
@@ -215,7 +215,7 @@ export default {
         area: ""
       },
       rules: {
-        title: [{ required: true, message: "请输入学校名称", trigger: "blur" }],
+        title: [{ required: true, message: "请输入用户昵称", trigger: "blur" }],
         cover: [{ required: true, message: "请上传封面", trigger: "change" }],
         area: [{ required: true, message: "请选择推送范围", trigger: "change" }],
         content: [
@@ -296,11 +296,11 @@ export default {
     handleCoverRemove: function (file, fileList) {
       this.infoForm.cover = "";
     },
-    handleCoverSuccess: function (res, file) {
+    handleCoverSuccess(res, file) {
       this.cover = res.file.url;
       this.infoForm.cover = res.file.url;
     },
-    beforeAvatarUpload: function (file) {
+    beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg" || "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {

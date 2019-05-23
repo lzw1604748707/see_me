@@ -1,24 +1,24 @@
 <template>
-	<div class="wrapper">
-		<!-- 顶部头部 -->
-		<HeaderItem></HeaderItem>
+  <div class="wrapper">
+    <!-- 顶部头部 -->
+    <HeaderItem></HeaderItem>
     <!-- 中间区域 -->
-		<el-container class="main">
+    <el-container class="main">
       <!-- 左侧菜单栏 -->
-			<el-aside class="menu">
-				<MenuItems></MenuItems>
-			</el-aside>
+      <el-aside class="menu">
+        <MenuItems></MenuItems>
+      </el-aside>
       <!-- 展示页-->
-			<el-main class="content">
+      <el-main class="content">
         <!-- 面包屑导航 -->
-				<BreadCrumb></BreadCrumb>
+        <BreadCrumb></BreadCrumb>
 
         <!-- 展示页面 -->
-				<router-view></router-view>
+        <router-view></router-view>
 
-			</el-main> <!-- 展示页 结束-->
-		</el-container><!-- 中间区域 -->
-	</div>
+      </el-main> <!-- 展示页 结束-->
+    </el-container><!-- 中间区域 -->
+  </div>
 </template>
 
 <script>
@@ -31,12 +31,18 @@ export default {
     MenuItems,
     BreadCrumb
   },
-  created() {},
-  mounted() {},
+  created() { },
+  mounted() { },
   methods: {}
 };
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.wrapper {
+  height: 100vh;
+  background: #fff;
+  .main {
+    height: auto;
+  }
+}
 </style>

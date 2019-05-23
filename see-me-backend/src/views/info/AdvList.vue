@@ -200,7 +200,7 @@ export default {
         area: ""
       },
       rules: {
-        title: [{ required: true, message: "请输入学校名称", trigger: "blur" }],
+        title: [{ required: true, message: "请输入用户昵称", trigger: "blur" }],
         cover: [{ required: true, message: "请上传封面", trigger: "change" }],
         schoolIdList: [
           { required: true, message: "请选择推送范围", trigger: "change" }

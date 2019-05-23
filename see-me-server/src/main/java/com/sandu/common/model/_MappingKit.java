@@ -16,24 +16,28 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
-		arp.addMapping("classes", "id", Classes.class);
+
 		arp.addMapping("feedback", "id", Feedback.class);
-		arp.addMapping("grade", "id", Grade.class);
-		arp.addMapping("parent_account", "id", ParentAccount.class);
-		arp.addMapping("school", "id", School.class);
-		arp.addMapping("school_account", "id", SchoolAccount.class);
-		arp.addMapping("school_introduction", "id", SchoolIntroduction.class);
 		arp.addMapping("sensitive_words", "id", SensitiveWords.class);
-		arp.addMapping("start_page", "id", StartPage.class);
-		arp.addMapping("student", "id", Student.class);
+		arp.addMapping("sm_photo_collection", "id", SmPhotoCollection.class);
+		arp.addMapping("sm_photo_collection_record", "id", SmPhotoCollectionRecord.class);
+		arp.addMapping("sm_photo_comment", "id", SmPhotoComment.class);
+		arp.addMapping("sm_photo_field", "id", SmPhotoField.class);
+		arp.addMapping("sm_photo_praise", "id", SmPhotoPraise.class);
+		arp.addMapping("sm_photo_project", "id", SmPhotoProject.class);
+		arp.addMapping("sm_sys_admin", "id", SmSysAdmin.class);
+		arp.addMapping("sm_sys_meassage", "id", SmSysMeassage.class);
+		arp.addMapping("sm_sys_user", "id", SmSysUser.class);
+		arp.addMapping("sm_sys_user_attention", "id", SmSysUserAttention.class);
 		arp.addMapping("sys_account", "id", SysAccount.class);
 		arp.addMapping("sys_adv", "id", SysAdv.class);
 		arp.addMapping("sys_info", "id", SysInfo.class);
+		// Composite Primary Key order: infoId,schoolId
+		arp.addMapping("sys_info_school", "infoId,schoolId", SysInfoSchool.class);
 		arp.addMapping("sys_menu", "id", SysMenu.class);
 		arp.addMapping("sys_role", "id", SysRole.class);
 		arp.addMapping("sys_role_menu", "id", SysRoleMenu.class);
 		arp.addMapping("sys_session", "id", SysSession.class);
-		arp.addMapping("teacher", "id", Teacher.class);
 	}
 }
 

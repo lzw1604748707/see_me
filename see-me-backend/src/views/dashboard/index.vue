@@ -11,7 +11,7 @@
           </div>
           <ul class="platform-li">
             <li>当前入住学校数量 <span>{{platform.schoolCount}}</span> 所</li>
-            <li>学生数量 <span>{{platform.studentCount}}</span> 人</li>
+            <li>作品数 <span>{{platform.studentCount}}</span> 人</li>
             <li>账户数量 <span>{{platform.accountCount}}</span> 个</li>
             <li>缴费到期学校数量 <span>{{platform.overTimeSchoolCount}}</span> 所</li>
             <li>广告数量 <span>{{platform.advCount}}</span> 所</li>

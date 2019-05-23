@@ -6,8 +6,8 @@ import router from './router'
 import store from './store'
 import moment from 'moment'
 import { VueEditor } from "vue2-editor";
+import '@/assets/css/public.scss'
 import './permission' // 权限
-
 Vue.config.productionTip = false
 
 Vue.use(VueEditor)

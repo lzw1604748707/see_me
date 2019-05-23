@@ -21,10 +21,12 @@
     </el-form>
     <!-- 数据表格 -->
     <el-table :data="tableData"
-      class="table"
+      border
+      height="580"
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="{'text-align':'center'}"
       ref="createFieldTable"
-      stripe
-      border>
+      stripe>
       <el-table-column align="center"
         type="index"
         label="序号"
@@ -36,6 +38,7 @@
         prop="provider"
         label="提供者昵称"></el-table-column>
       <el-table-column align="center"
+        sortable
         prop="createDate"
         label="创建时间"
         :formatter="formatDate"></el-table-column>
@@ -67,7 +70,9 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <el-pagination @size-change="handleSizeChange"
+    <el-pagination class="table__pagination"
+      background
+      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="page.pageNumber"
       :page-sizes="[10, 20, 30, 40]"
@@ -148,11 +153,13 @@ export default {
     },
 
     handleSizeChange(val) {
-      this.page.pageSize = val;
+      this.page.pageSize = val
+      this.page.pageNumber = 1
       this.getList();
     },
     handleCurrentChange(val) {
-      this.pageNumber = val;
+      console.log('当前页', val);
+      this.page.pageNumber = val;
       this.getList();
     },
     formatDate(...dataList) {
@@ -213,9 +220,6 @@ export default {
       list(params)
         .then(res => {
           this.tableData = res.data.page.list;
-          if (this.page.pageNumber * this.page.pageSize < res.data.page.totalRow) {
-            this.page.pageNumber++
-          }
           this.page.total = res.data.page.totalRow;
         })
         .catch(error => {
@@ -228,6 +232,9 @@ export default {
 </script>
 
 <style <style lang="scss" scoped>
+.table__pagination {
+  margin-top: 5px;
+}
 .add__prompt {
   color: #999;
   margin-top: 40px;

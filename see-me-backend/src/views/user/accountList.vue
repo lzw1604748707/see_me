@@ -19,57 +19,45 @@
     </el-form>
     <!-- 数据表格 -->
     <el-table :data="tableData"
-      class="table"
+      height="580"
       stripe
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="{'text-align':'center'}"
       border>
-      <el-table-column align="center"
-        type="index"
+      <el-table-column type="index"
         label="序号"
         width="70"></el-table-column>
-      <el-table-column align="center"
-        prop="avatar"
+      <el-table-column prop="avatar"
         label="头像"
         width="70">
         <template slot-scope="scope">
-          <img v-if="scope.row.avatar"
-            style="width:40px;height:40px;cursor: pointer;"
-            :src="scope.row.avatar"
-            @click="handleCoverCardPreview(scope.row.avatar)">
-          <img v-else
-            style="width:40px;height:40px;cursor: pointer;"
-            src="/static/img/system.jpg"
+          <img class="table__avatar"
+            :src="scope.row.avatar||'/static/img/system.jpg'"
             @click="handleCoverCardPreview(scope.row.avatar)">
         </template>
       </el-table-column>
-      <el-table-column align="center"
-        prop="name"
+      <el-table-column prop="name"
         label="用户昵称"></el-table-column>
-      <el-table-column align="center"
-        prop="account"
+      <el-table-column prop="account"
         label="账号"></el-table-column>
-      <el-table-column align="center"
-        prop="userType"
+      <el-table-column prop="userType"
         label="用户类型"></el-table-column>
-      <el-table-column align="center"
-        prop="status"
+      <el-table-column prop="status"
         label="状态">
         <template slot-scope="scope">
           <span>{{getStatusName(scope.row.status)}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center"
-        prop="lastLoginDate"
+      <el-table-column prop="lastLoginDate"
         label="上次登录时间"
         sortable
         width="140"
         :formatter="formatDateJoinAt"></el-table-column>
-      <el-table-column align="center"
-        prop="nextPayAt"
+      <el-table-column prop="nextPayAt"
         label="冻结时间"
         width="120"
         :formatter="formatDateNextPayAt"></el-table-column>
-      <el-table-column align="center"
-        class=""
+      <el-table-column class=""
         label="操作"
         width="230">
         <template slot-scope="scope">
@@ -85,7 +73,9 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <el-pagination @size-change="handleSizeChange"
+    <el-pagination class="table__pagination"
+      background
+      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="page.pageNumber"
       :page-sizes="[10, 20, 30, 40]"
@@ -102,12 +92,8 @@
         <div class="user__avatar">
           <div class="user__avatar--img">
             <img v-if="infoForm.avatar"
-              style="width:150px;height:150px;"
-              :src="infoForm.avatar">
-            <img v-else
-              style="width:150px;height:150px;vertical-align: bottom;"
-              src="/static/img/system.jpg"
-              alt="">
+              style="max-width:150px;height:150px;vertical-align: bottom;"
+              :src="infoForm.avatar||'/static/img/system.jpg'">
           </div>
           <span>用户头像</span>
         </div>
@@ -207,9 +193,9 @@
         :rules="rules"
         label-width="120px">
         <el-form-item class="user__avatar"
-          prop="cover"
+          prop="avatar"
           label="头像：">
-          <el-upload class="avatar-uploader"
+          <el-upload class="img-uploader"
             action="/admin/upload"
             :headers="headers"
             :show-file-list="false"
@@ -217,11 +203,11 @@
             :on-remove="handleCoverRemove"
             with-credentials='true'
             :before-upload="beforeAvatarUpload">
-            <img v-if="avatar"
-              :src="avatar"
-              class="avatar">
+            <img class="img"
+              v-if="avatar"
+              :src="avatar">
             <i v-else
-              class="el-icon-plus avatar-uploader-icon"></i>
+              class="el-icon-plus img-uploader-icon"></i>
           </el-upload>
         </el-form-item>
         <el-form-item style="display:block;"
@@ -388,11 +374,13 @@ export default {
       return isJPG && isLt2M;
     },
     handleSizeChange(val) {
-      this.page.pageSize = val;
+      this.page.pageSize = val
+      this.page.pageNumber = 1
       this.getList();
     },
-    handleCurrentChange: function (val) {
-      this.pageNumber = val;
+    handleCurrentChange(val) {
+      console.log('当前页', val);
+      this.page.pageNumber = val;
       this.getList();
     },
     formatDateJoinAt: function (row, column) {
@@ -408,9 +396,11 @@ export default {
     handleEdit: function (index, row) {
       this.editDialogVisible = true
       this.infoForm = Object.assign({}, row)
+      this.avatar = this.infoForm.avatar
     },
     handleAdd: function () {
       this.addDialogVisible = true;
+      this.avatar = ''
       this.infoForm = Object.assign({}, null);
     },
     ChangeStatus(row) {
@@ -507,9 +497,6 @@ export default {
       list(params)
         .then(res => {
           this.tableData = res.data.page.list;
-          if (this.page.pageNumber * this.page.pageSize < res.data.page.totalRow) {
-            this.page.pageNumber++
-          }
           this.page.total = res.data.page.totalRow;
         })
         .catch(error => {
@@ -576,13 +563,24 @@ export default {
 .school-name {
   font-weight: 700;
 }
+.table__avatar {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  vertical-align: bottom;
+}
 .user__avatar {
   position: absolute;
   align-items: center;
-  right: 115px;
+  right: 142px;
   top: 0;
   text-align: center;
   &--img {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 0 5px #999;

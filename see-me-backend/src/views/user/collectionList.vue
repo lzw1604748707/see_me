@@ -22,18 +22,17 @@
     <!-- 数据表格 -->
     <el-table :data="tableData"
       ref="collectionTable"
-      class="table"
+      height="580"
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="{'text-align':'center'}"
       stripe
       border>
-      <el-table-column align="center"
-        type="index"
+      <el-table-column type="index"
         label="序号"
         width="70"></el-table-column>
-      <el-table-column align="center"
-        prop="title"
+      <el-table-column prop="title"
         label="作品集标题"></el-table-column>
-      <el-table-column align="center"
-        prop="projectCoverList"
+      <el-table-column prop="projectCoverList"
         width="250"
         label="封面集">
         <template slot-scope="scope">
@@ -46,15 +45,13 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center"
-        prop="creater"
+      <el-table-column prop="creater"
         label="创建者昵称"></el-table-column>
-      <el-table-column align="center"
-        prop="createDate"
+      <el-table-column prop="createDate"
+        sortable
         label="创建时间"
         :formatter="formatDate"></el-table-column>
-      <el-table-column align="center"
-        class=""
+      <el-table-column class=""
         label="操作"
         width="300">
         <template slot-scope="scope">
@@ -73,7 +70,9 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <el-pagination @size-change="handleSizeChange"
+    <el-pagination class="table__pagination"
+      background
+      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="page.pageNumber"
       :page-sizes="[10, 20, 30, 40]"
@@ -256,11 +255,13 @@ export default {
       if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     handleSizeChange(val) {
-      this.page.pageSize = val;
+      this.page.pageSize = val
+      this.page.pageNumber = 1
       this.getList();
     },
     handleCurrentChange(val) {
-      this.pageNumber = val;
+      console.log('当前页', val);
+      this.page.pageNumber = val;
       this.getList();
     },
     formatDate(...dataList) {
@@ -409,9 +410,6 @@ export default {
       list(params)
         .then(res => {
           this.tableData = res.data.page.list;
-          if (this.page.pageNumber * this.page.pageSize < res.data.page.totalRow) {
-            this.page.pageNumber++
-          }
           this.page.total = res.data.page.totalRow;
         })
         .catch(error => {

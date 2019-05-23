@@ -21,7 +21,9 @@
     </el-form>
     <!-- 数据表格 -->
     <el-table :data="tableData"
-      class="table"
+      height="580"
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="{'text-align':'center'}"
       ref="projectTable"
       stripe
       border>
@@ -44,6 +46,7 @@
       <el-table-column prop="viewCount"
         label="浏览数"></el-table-column>
       <el-table-column prop="praiseCount"
+        sortable
         label="好评数"></el-table-column>
       <el-table-column prop="status"
         label="状态">
@@ -67,7 +70,9 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <el-pagination @size-change="handleSizeChange"
+    <el-pagination class="table__pagination"
+      background
+      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="page.pageNumber"
       :page-sizes="[10, 20, 30, 40]"
@@ -103,18 +108,18 @@
         </el-form-item>
         <el-form-item prop="cover"
           label="封面：">
-          <el-upload class="avatar-uploader"
+          <el-upload class="img-uploader"
             action="/admin/upload"
             :headers="headers"
             :show-file-list="false"
             :on-success="handleCoverSuccess"
             :on-remove="handleCoverRemove"
             :before-upload="beforeAvatarUpload">
-            <img v-if="cover"
-              :src="cover"
-              class="avatar">
+            <img class="img"
+              v-if="cover"
+              :src="cover">
             <i v-else
-              class="el-icon-plus avatar-uploader-icon"></i>
+              class="el-icon-plus img-uploader-icon"></i>
           </el-upload>
         </el-form-item>
         <el-form-item prop="extCover"
@@ -218,16 +223,18 @@ export default {
       this.addEditDialogVisible = false
       this.$refs["infoForm"].resetFields();
     },
-    handleSizeChange: function (val) {
-      this.page.pageSize = val;
-      this.getList();
-    },
     handleCoverCardPreview: function (val) {
       this.previewImageUrl = val;
       this.isShowImgPreview = true;
     },
-    handleCurrentChange: function (val) {
-      this.pageNumber = val;
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.page.pageNumber = 1
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      console.log('当前页', val);
+      this.page.pageNumber = val;
       this.getList();
     },
     handleSearch: function () {
@@ -371,8 +378,7 @@ export default {
       };
       list(params).then(res => {
         this.tableData = res.data.page.list;
-
-        console.log('翻页暂时不行');
+        this.page.total = res.data.page.totalRow;
       })
         .catch(error => {
           this.$message.error(error);

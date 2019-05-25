@@ -10,11 +10,11 @@
             </span>
           </div>
           <ul class="platform-li">
-            <li>已入驻用户总数 <span>{{platform.userCount}}</span></li>
-            <li>平台累计产生的项目数量 <span>{{platform.projectCount}}</span></li>
-            <li>平台累计产生的作品集数量 <span>{{platform.collectionCount}}</span></li>
-            <li>广告数量 <span>{{platform.advCount}}</span></li>
-            <li>发布的资讯数量 <span>{{platform.infoCount}}</span></li>
+            <li>已入驻用户总数 | <span>{{platform.userCount}}</span></li>
+            <li>平台累计产生的项目数量 | <span>{{platform.projectCount}}</span></li>
+            <li>平台累计产生的作品集数量 | <span>{{platform.collectionCount}}</span></li>
+            <li>广告数量 | <span>{{platform.advCount}}</span></li>
+            <li>发布的资讯数量 | <span>{{platform.infoCount}}</span></li>
           </ul>
         </el-card>
       </el-col>
@@ -99,6 +99,9 @@ export default {
 <style>
 .dashboard {
   margin-top: 20px;
+}
+.box-card {
+  height: 510px;
 }
 .clearfix h1 {
   font-weight: 700;

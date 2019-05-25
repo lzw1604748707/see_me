@@ -63,13 +63,13 @@ public abstract class BaseSmPhotoCollection<M extends BaseSmPhotoCollection<M>> 
 		return get("updateDate");
 	}
 
-	public M setIsDelete(java.lang.String isDelete) {
+	public M setIsDelete(java.lang.Integer isDelete) {
 		set("isDelete", isDelete);
 		return (M)this;
 	}
 	
-	public java.lang.String getIsDelete() {
-		return getStr("isDelete");
+	public java.lang.Integer getIsDelete() {
+		return getInt("isDelete");
 	}
 
 	public M setStatus(java.lang.Boolean status) {

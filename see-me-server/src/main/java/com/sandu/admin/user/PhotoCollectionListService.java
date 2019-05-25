@@ -61,13 +61,13 @@ public class PhotoCollectionListService {
 		return success ? RetKit.ok() : RetKit.fail();
 	}
 	public List<SmPhotoProject> findAllProjectToCardList() {
-		List<SmPhotoProject> projectList = projectDao.find("select id,title,cover,viewCount,commentCount from sm_photo_project");
+		List<SmPhotoProject> projectList = projectDao.find("select id,title,cover,viewCount,commentCount from sm_photo_project where isDelete=0");
 		return projectList;
 	}
 	//逻辑删除
 	public RetKit remove(Integer id) {
 		SmPhotoCollection removeCollection = findById(id);
-		boolean success = removeCollection.setIsDelete("0").update();
+		boolean success = removeCollection.setIsDelete(1).update();
 		return success ? RetKit.ok() : RetKit.fail();
 	}	
 }

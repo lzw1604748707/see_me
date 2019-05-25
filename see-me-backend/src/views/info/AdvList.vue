@@ -28,6 +28,7 @@
       border>
       <el-table-column type="index"
         label="序号"
+        :index="realIndex"
         width="70"></el-table-column>
       <el-table-column prop="cover"
         label="封面图"
@@ -63,9 +64,11 @@
         <template slot-scope="scope">
           <el-button size="mini"
             type="primary"
+            plain
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini"
             type="danger"
+            plain
             @click="handleRemove(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -85,13 +88,74 @@
     <el-dialog top="2vh"
       :title="isEdit?'编辑':'新增'"
       :visible.sync="addEditDialogVisible"
+      @close="closeDialog('addEditDialogVisible')"
       width="800px">
       <!-- 学校详情 -->
       <el-form ref="infoForm"
         :model="infoForm"
         :rules="rules"
         label-width="120px">
-        <el-form-item prop="title"
+        <div style="position: relative;">
+          <el-form-item prop="title"
+            label="标题："
+            style="display:block;">
+            <el-input style="width:300px;"
+              v-model="infoForm.title"
+              placeholder="请输入标题"></el-input>
+          </el-form-item>
+          <el-form-item prop="createField"
+            label="展示领域："
+            style="display:block;">
+            <el-select filterable
+              style="width:300px;"
+              v-model="infoForm.fieldId"
+              placeholder="请选择创作领域">
+              <el-option v-for="field of fieldList"
+                :key="field.id"
+                :label="field.fieldName"
+                :value="field.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="status"
+            label="状态："
+            style="display:block; ">
+            <el-select style="width:300px;"
+              v-model="infoForm.status"
+              placeholder="请选择状态">
+              <el-option :key="0"
+                label="草稿"
+                :value="0"></el-option>
+              <el-option :key="1"
+                label="展示中"
+                :value="1"></el-option>
+              <el-option :key="2"
+                label="过期"
+                :value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="cover"
+            style="position:absolute;right:30px; top:0;"
+            label="封面：">
+            <el-upload style="width:165px;height:165px;"
+              class="img-uploader"
+              action="/admin/upload"
+              :headers="headers"
+              :show-file-list="false"
+              :on-success="handleCoverSuccess"
+              :on-remove="handleCoverRemove"
+              :before-upload="beforeAvatarUpload">
+              <img style="max-width:165px;height:165px;"
+                class="img"
+                v-if="cover"
+                :src="cover">
+              <i v-else
+                style="max-width:165px;height:165px;"
+                class="el-icon-plus img-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+        </div>
+
+        <!-- <el-form-item prop="title"
           label="标题：">
           <el-input v-model="infoForm.title"></el-input>
         </el-form-item>
@@ -139,15 +203,16 @@
               label="已失效"
               :value="2"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item prop="url"
           label="外链：">
-          <el-input v-model="infoForm.url"></el-input>
+          <el-input style="width: 615px;"
+            v-model="infoForm.url"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="closeDialog">关闭</el-button>
+        <el-button @click="closeDialog('addEditDialogVisible')">关闭</el-button>
         <el-button type="primary"
           v-if="isEdit"
           @click="handleSubmitUpdate">更新</el-button>
@@ -215,12 +280,14 @@ export default {
       tableData: []
     };
   },
-  created() { },
-  mounted() {
-    this.getList();
-    this.reFindCreateFieldList();
-  },
+
   computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    },
     statusName() {
       return function (status) {
         const statusNameList = ['草稿', '展示中', '已到期']
@@ -234,9 +301,10 @@ export default {
     }
   },
   methods: {
-    closeDialog() {
-      this.addEditDialogVisible = false
-      this.$refs["infoForm"].resetFields();
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     handleSizeChange: function (val) {
       this.page.pageSize = val;
@@ -365,6 +433,10 @@ export default {
         this.fieldList = res.data
         console.log('参数', this.fieldList);
       })
+    },
+    mounted() {
+      this.getList();
+      this.reFindCreateFieldList();
     }
   }
 };

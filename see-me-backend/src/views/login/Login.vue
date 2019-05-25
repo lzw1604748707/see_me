@@ -1,47 +1,51 @@
 <template>
   <div class="login">
     <!-- :rules="rules2"  下面的参数 -->
-    <el-form :model="loginForm"
-      ref="loginForm"
-      label-position="left"
-      label-width="0px"
-      class="demo-ruleForm login-container">
-      <h3 class="title">系统登录</h3>
-      <el-form-item prop="username">
-        <div class="login__input">
-          <el-input :class="{ input__account: accountVerify }"
-            v-model="loginForm.username"
-            auto-complete="off"
-            :placeholder="accountVerify ? '请输入账号' : '账号'"
-            @blur="verify(loginForm.username, 'accountVerify')"></el-input>
-        </div>
-        <!-- <el-input type="text"
+    <div class="login-container ">
+      <div class="
+      background-frosted"></div>
+      <el-form :model="loginForm"
+        ref="loginForm"
+        label-position="left"
+        label-width="0px"
+        class="demo-ruleForm login__form">
+        <h3 class="title">系统登录</h3>
+        <el-form-item prop="username">
+          <div class="login__input">
+            <el-input :class="{ input__account: accountVerify }"
+              v-model="loginForm.username"
+              auto-complete="off"
+              :placeholder="accountVerify ? '请输入账号' : '账号'"
+              @blur="verify(loginForm.username, 'accountVerify')"></el-input>
+          </div>
+          <!-- <el-input type="text"
           v-model="loginForm.username"
           auto-complete="off"
           placeholder="账号"></el-input> -->
-      </el-form-item>
-      <el-form-item prop="password">
-        <div class="login__input">
-          <el-input type="password"
-            :class="{ input__password: passwordVerify }"
-            v-model="loginForm.password"
-            auto-complete="off"
-            :placeholder="`${passwordVerify ? '请输入密码' : '密码'}`"
-            @blur="verify(loginForm.password, 'passwordVerify')"></el-input>
-        </div>
-        <!-- <el-input type="password"
+        </el-form-item>
+        <el-form-item prop="password">
+          <div class="login__input">
+            <el-input type="password"
+              :class="{ input__password: passwordVerify }"
+              v-model="loginForm.password"
+              auto-complete="off"
+              :placeholder="`${passwordVerify ? '请输入密码' : '密码'}`"
+              @blur="verify(loginForm.password, 'passwordVerify')"></el-input>
+          </div>
+          <!-- <el-input type="password"
           v-model="loginForm.password"
           auto-complete="off"
           placeholder="密码"></el-input> -->
-      </el-form-item>
-      <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
-      <el-form-item class="form__submit">
-        <el-button type="primary"
-          class="form__submit-button"
-          @click.native.prevent="handleLogin"
-          :loading="logining">登录</el-button>
-      </el-form-item>
-    </el-form>
+        </el-form-item>
+        <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
+        <el-form-item class="form__submit">
+          <el-button type="primary"
+            class="form__submit-button"
+            @click.native.prevent="handleLogin"
+            :loading="logining">登录</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -79,6 +83,8 @@ export default {
           };
           login(loginParams)
             .then(res => {
+              console.log('参数为', res);
+
               const account = res.data.account;
               this.$store.dispatch('login', { account }).then(() => { // 生成可访问的路由表
                 const menus = account.menus;
@@ -89,7 +95,8 @@ export default {
               })
             })
             .catch(error => {
-              this.$message.error(error);
+              console.log(error);
+              // this.$message.warning('res.data.msg');
               this.logining = false;
             });
         }
@@ -169,15 +176,31 @@ export default {
     }
   }
   .login-container {
+    position: relative;
     -webkit-border-radius: 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
-    margin: 180px auto;
+    width: 422px;
+    height: 350px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 25px rgba(150, 150, 150, 0.8);
+  }
+  .background-frosted {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: url("https://api.i-meto.com/bing?random") round fixed;
+    opacity: 0.8;
+    filter: blur(20px);
+  }
+  .login__form {
+    position: absolute;
     width: 350px;
     padding: 35px 35px 15px 35px;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
+    left: 0;
+    top: 0;
   }
 
   .title {

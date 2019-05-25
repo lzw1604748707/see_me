@@ -4,8 +4,6 @@ import com.jfinal.kit.Kv;
 import com.sandu.common.controller.AdminController;
 import com.sandu.common.kit.RetKit;
 import com.sandu.common.model.Feedback;
-import com.sandu.common.model.SysAdv;
-
 public class FeebackListController extends AdminController {
 
 	static final FeebackListService srv = FeebackListService.me;
@@ -26,6 +24,12 @@ public class FeebackListController extends AdminController {
 	public void remove(){
 		srv.deleteById(getParaToInt());
 		renderJson(RetKit.ok());
+	}
+	
+	public void changeStatus(){
+		Integer id = getParaToInt("id");
+		Integer  status = getParaToInt("status");
+		renderJson(srv.changeStatus(id,status));
 	}
 	
 }

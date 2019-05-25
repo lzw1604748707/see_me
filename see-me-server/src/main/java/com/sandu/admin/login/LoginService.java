@@ -21,17 +21,17 @@ public class LoginService {
 	
 	public RetKit doLogin(String username,String password,String loginIp){
 		if (StrKit.isBlank(username) || StrKit.isBlank(password)) {
-			return RetKit.fail("用戶名或密碼不能為空");
+			return RetKit.fail("用户名或者密码不能为空");
 		}
 		username = username.trim();
 		password = password.trim();
 		
 		SysAccount account = accountDao.findFirst("select * from sys_account where username = ? limit 1", username);
 		if (account == null) {
-			return RetKit.fail("賬號不存在");
+			return RetKit.fail("账户不存在");
 		}
 		if(account.isStatusLockId()){
-			return RetKit.fail("賬號被禁用");
+			return RetKit.fail("账户被停用");
 		}
 		String salt = account.getSalt();
 		String hashPassword = HashKit.sha256(salt + password);
@@ -59,9 +59,10 @@ public class LoginService {
 			CacheKit.put(CacheConstant.SYS_ACCOUNT, sessionId, account);
 			//生成登陆日志
 			createLoginLog(account.getId(), loginIp);
+			account.setLastLoginAt(new Date()).update();
 			return RetKit.ok("account", account);
 		} else {
-			return RetKit.fail("密碼錯誤");
+			return RetKit.fail("密码错误");
 		}
 	}
 

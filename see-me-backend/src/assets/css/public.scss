@@ -9,14 +9,16 @@ html{
 }
 
 .img-uploader {
+  width: 150px;
+  height: 150px;
   .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    width: 150px;
-    height: 150px;
+    width: inherit;
+    height: inherit;
     &:hover {
       border-color: #409EFF;
     }
@@ -36,7 +38,7 @@ html{
 }
 
 .pircture__preview {
-  z-index: 10;
+  z-index: 2025;
   background: rgba(0, 0, 0, 0.8);
   position: fixed;
   top: 0;

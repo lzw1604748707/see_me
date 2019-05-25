@@ -28,6 +28,7 @@
       stripe
       border>
       <el-table-column type="index"
+        :index="realIndex"
         label="序号"
         width="70"></el-table-column>
       <el-table-column prop="title"
@@ -60,11 +61,13 @@
         <template slot-scope="scope">
           <el-button size="mini"
             type="warning"
+            plain
             @click="handleDownShelf(scope.$index,scope.row)">{{scope.row.status?'下架':'上架'}}</el-button>
           <el-button size="mini"
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini"
             type="danger"
+            plain
             @click="handleRemove(scope.$index, scope.row)">刪除</el-button>
         </template>
       </el-table-column>
@@ -83,6 +86,7 @@
 
     <el-dialog :title="isEdit?'编辑':'新增'"
       :visible.sync="addEditDialogVisible"
+      @close="closeDialog('addEditDialogVisible')"
       width="50%">
       <!-- 项目新增 -->
       <el-form ref="infoForm"
@@ -123,7 +127,8 @@
         </el-form-item>
         <el-form-item prop="extCover"
           label="配图：">
-          <el-upload action="/admin/upload"
+          <el-upload ref='upload'
+            action="/admin/upload"
             list-type="picture-card"
             :headers="headers"
             :file-list="extImageList"
@@ -138,7 +143,7 @@
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="closeDialog">关闭</el-button>
+        <el-button @click="closeDialog('addEditDialogVisible')">关闭</el-button>
         <el-button type="primary"
           v-if="isEdit"
           @click="handleSubmitUpdate">提交</el-button>
@@ -205,6 +210,12 @@ export default {
     this.getList();
   },
   computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    },
     headers() {
       return {
         jxtAdminSessionId: this.$store.state.token
@@ -212,9 +223,15 @@ export default {
     }
   },
   methods: {
-    closeDialog() {
-      this.addEditDialogVisible = false
-      this.$refs["infoForm"].resetFields();
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      this.cover = "";
+      this.extImageList = []
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
+      console.log(this.$refs);
+
+      this.$refs['upload'].clearFiles()
     },
     handleCoverCardPreview: function (val) {
       this.previewImageUrl = val;
@@ -242,22 +259,23 @@ export default {
       this.reFindCreateFieldList()
     },
     handleEdit: function (index, row) {
-      this.cover = "";
-      this.extImageList = [];
       this.isEdit = true;
+      this.reFindCreateFieldList()
       this.reFindDetailByid(row.id)
-      this.addEditDialogVisible = true;
     },
     reFindDetailByid(id) {
       let params = { id: id }
       findById(params).then(res => {
         this.infoForm = res.data
         this.cover = this.infoForm.cover;
+        const tempImageList = []
         if (this.infoForm.imagesPath) {
           this.infoForm.imagesPath.split(',').forEach(imageUrl => {
-            this.extImageList.push({ url: imageUrl })
+            tempImageList.push({ url: imageUrl })
           })
         }
+        this.extImageList = tempImageList;
+        this.addEditDialogVisible = true;
       })
     },
     handlePictureCardPreview: function (file) {
@@ -266,7 +284,6 @@ export default {
     },
     handleExtCoverSuccess: function (res, file) {
       this.extImageList.push(res.file);
-      // this.infoForm.extImageList = this.extImageList;
     },
     // handleExtCoverRemove: function (file, fileList) {
     //   this.infoForm.extImageList = this.extImageList;
@@ -382,7 +399,6 @@ export default {
     reFindCreateFieldList() {
       findCreateFileldList().then(res => {
         this.fieldList = res.data
-        console.log('参数', this.fieldList);
       })
     }
   }

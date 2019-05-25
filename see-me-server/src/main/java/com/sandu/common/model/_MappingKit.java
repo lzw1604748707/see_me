@@ -17,14 +17,13 @@ public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
 		arp.addMapping("feedback", "id", Feedback.class);
-		arp.addMapping("sensitive_words", "id", SensitiveWords.class);
-		arp.addMapping("sm_photo_collection", "id", SmPhotoCollection.class);
+		// Composite Primary Key order: id,isDelete
+		arp.addMapping("sm_photo_collection", "id,isDelete", SmPhotoCollection.class);
 		arp.addMapping("sm_photo_collection_record", "id", SmPhotoCollectionRecord.class);
 		arp.addMapping("sm_photo_comment", "id", SmPhotoComment.class);
 		arp.addMapping("sm_photo_field", "id", SmPhotoField.class);
 		arp.addMapping("sm_photo_praise", "id", SmPhotoPraise.class);
 		arp.addMapping("sm_photo_project", "id", SmPhotoProject.class);
-		arp.addMapping("sm_sys_admin", "id", SmSysAdmin.class);
 		arp.addMapping("sm_sys_meassage", "id", SmSysMeassage.class);
 		arp.addMapping("sm_sys_user", "id", SmSysUser.class);
 		arp.addMapping("sm_sys_user_attention", "id", SmSysUserAttention.class);

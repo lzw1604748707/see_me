@@ -63,13 +63,13 @@ public abstract class BaseSmSysUser<M extends BaseSmSysUser<M>> extends Model<M>
 		return getStr("mobile");
 	}
 
-	public M setSex(java.lang.String sex) {
+	public M setSex(java.lang.Integer sex) {
 		set("sex", sex);
 		return (M)this;
 	}
 	
-	public java.lang.String getSex() {
-		return getStr("sex");
+	public java.lang.Integer getSex() {
+		return getInt("sex");
 	}
 
 	public M setAvatar(java.lang.String avatar) {
@@ -135,13 +135,13 @@ public abstract class BaseSmSysUser<M extends BaseSmSysUser<M>> extends Model<M>
 		return getStr("freezeCause");
 	}
 
-	public M setStatus(java.lang.String status) {
+	public M setStatus(java.lang.Integer status) {
 		set("status", status);
 		return (M)this;
 	}
 	
-	public java.lang.String getStatus() {
-		return getStr("status");
+	public java.lang.Integer getStatus() {
+		return getInt("status");
 	}
 
 	public M setCreateDate(java.util.Date createDate) {

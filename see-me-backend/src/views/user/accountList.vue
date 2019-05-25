@@ -26,13 +26,14 @@
       border>
       <el-table-column type="index"
         label="序号"
+        :index="realIndex"
         width="70"></el-table-column>
       <el-table-column prop="avatar"
         label="头像"
         width="70">
         <template slot-scope="scope">
           <img class="table__avatar"
-            :src="scope.row.avatar||'/static/img/system.jpg'"
+            :src="scope.row.avatar||'/static/img/userLogo.jpg'"
             @click="handleCoverCardPreview(scope.row.avatar)">
         </template>
       </el-table-column>
@@ -41,33 +42,40 @@
       <el-table-column prop="account"
         label="账号"></el-table-column>
       <el-table-column prop="userType"
-        label="用户类型"></el-table-column>
+        label="用户类型">
+        <template slot-scope="scope">
+          <span>{{userTypeName(scope.row.userType)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="status"
         label="状态">
         <template slot-scope="scope">
           <span>{{getStatusName(scope.row.status)}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="career"
+        label="职业"></el-table-column>
       <el-table-column prop="lastLoginDate"
         label="上次登录时间"
         sortable
-        width="140"
-        :formatter="formatDateJoinAt"></el-table-column>
-      <el-table-column prop="nextPayAt"
-        label="冻结时间"
-        width="120"
-        :formatter="formatDateNextPayAt"></el-table-column>
+        width="170"
+        :formatter="formatDate"></el-table-column>
+
       <el-table-column class=""
         label="操作"
         width="230">
         <template slot-scope="scope">
           <el-button size="mini"
             type="info"
+            plain
             @click="handleRead(scope.$index, scope.row)">查看</el-button>
           <el-button size="mini"
+            type="warning"
+            plain
             @click="ChangeStatus(scope.row)">{{scope.row.status===2?'解冻':'冻结'}}</el-button>
           <el-button size="mini"
             type="primary"
+            plain
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
         </template>
       </el-table-column>
@@ -88,12 +96,12 @@
       width="800px">
       <!-- 用户详情 -->
       <el-form style="position:relative;"
-        label-width="120px">
+        label-width="140px">
         <div class="user__avatar">
           <div class="user__avatar--img">
             <img v-if="infoForm.avatar"
               style="max-width:150px;height:150px;vertical-align: bottom;"
-              :src="infoForm.avatar||'/static/img/system.jpg'">
+              :src="infoForm.avatar||'/static/img/userLogo.jpg'">
           </div>
           <span>用户头像</span>
         </div>
@@ -108,7 +116,7 @@
         </el-form-item>
         <el-form-item class="school-item"
           label="性别：">
-          <span>{{infoForm.sex}}</span>
+          <span>{{infoForm.sex?'女':'男'}}</span>
         </el-form-item>
         <el-form-item class="school-item"
           label="职业：">
@@ -132,6 +140,7 @@
           <span style="margin-left:40px;">
             <el-button type="primary"
               size="mini"
+              :disabled="!infoForm.followers"
               round
               @click="reFindFollowerslist">关注者列表</el-button>
           </span>
@@ -143,6 +152,7 @@
             <el-button type="primary"
               size="mini"
               round
+              :disabled="!infoForm.followings"
               @click="reFindFollowingsList">正在关注列表</el-button>
           </span>
         </el-form-item>
@@ -152,7 +162,7 @@
         </el-form-item>
         <el-form-item v-if="infoForm.status!==0"
           class="school-item"
-          label="冻结时间:">
+          label="冻结时间：">
           <span>{{infoForm.freezeDate}}</span>
         </el-form-item>
         <el-form-item v-if="infoForm.status!==0"
@@ -184,6 +194,7 @@
 
     <el-dialog title="编辑"
       :visible.sync="editDialogVisible"
+      @close="closeDialog('editDialogVisible')"
       width="800px">
       <!-- 用户详情 -->
       <el-form ref="infoForm"
@@ -251,13 +262,14 @@
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="editDialogVisible = false">关闭</el-button>
+        <el-button @click="closeDialog('editDialogVisible')">关闭</el-button>
         <el-button type="primary"
           @click="handleSubmitUpdate">提交</el-button>
       </span>
     </el-dialog>
     <el-dialog title="新增"
       :visible.sync="addDialogVisible"
+      @close="closeDialog('addDialogVisible')"
       width="500px">
       <!-- 学校详情 -->
       <el-form ref="infoForm"
@@ -279,7 +291,7 @@
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="addDialogVisible = false">关闭</el-button>
+        <el-button @click="closeDialog('addDialogVisible')">关闭</el-button>
         <el-button type="primary"
           @click="handleSubmitSave">确定</el-button>
       </span>
@@ -288,7 +300,7 @@
       v-show="isShowImgPreview"
       @click="isShowImgPreview=false">
       <img class="preview__img"
-        :src="previewImageUrl||'/static/img/system.jpg'"
+        :src="previewImageUrl||'/static/img/userLogo.jpg'"
         alt="">
     </div>
   </div>
@@ -339,12 +351,31 @@ export default {
       tableData: []
     };
   },
+  computed: {
+    userTypeName() {
+      return function (type) {
+        const userTypeNameList = ['流量用户', '中坚用户', '专栏用户']
+        return userTypeNameList[type]
+      }
+    },
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    }
+  },
   created() { },
   mounted() {
     this.getList();
   },
   methods: {
-
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      this.avatar = ''
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
+    },
     handleCoverCardPreview(url) {
       this.previewImageUrl = url;
       this.isShowImgPreview = true;
@@ -383,11 +414,10 @@ export default {
       this.page.pageNumber = val;
       this.getList();
     },
-    formatDateJoinAt: function (row, column) {
-      return this.$moment(row.joinAt).format("YYYY-MM-DD");
-    },
-    formatDateNextPayAt: function (row, column) {
-      return this.$moment(row.nextPayAt).format("YYYY-MM-DD");
+    formatDate(...dataList) {
+      console.log('时间比', dataList);
+
+      return this.$moment(dataList[2]).format("YYYY-MM-DD HH:mm:ss");
     },
     handleRead: function (index, row) {
       this.infoDialogVisible = true;
@@ -404,7 +434,7 @@ export default {
       this.infoForm = Object.assign({}, null);
     },
     ChangeStatus(row) {
-      this.$confirm("确认提交吗？", "提示", {}).then(() => {
+      this.$confirm("确认要执行该操作么？", "提示", {}).then(() => {
         NProgress.start();
         if (row.status === 2) {
           row.status = 1

@@ -29,7 +29,7 @@ module.exports = {
     'vue-router': 'VueRouter',
     'vuex': 'Vuex',
     'axios': 'axios',
-    'element-ui': 'element-ui'
+    'element-ui': 'ELEMENT'
   },
   output: {
     path: config.build.assetsRoot,

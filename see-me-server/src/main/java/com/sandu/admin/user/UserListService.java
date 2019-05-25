@@ -72,16 +72,16 @@ public class UserListService {
 	//逻辑删除
 	public RetKit remove(Integer id) {
 		SmSysUser removeUser = findById(id);
-		boolean success = removeUser.setIsDelete(0).update();
+		boolean success = removeUser.setIsDelete(1).update();
 		return success ? RetKit.ok() : RetKit.fail();
 	}	
 	
-	public RetKit changeFreeze(Integer id,String status) {
+	public RetKit changeFreeze(Integer id,Integer status) {
 		SmSysUser user = findById(id);
 		boolean success = user.setStatus(status).update();
 		return success ? RetKit.ok() : RetKit.fail();
 	}	
-	public RetKit changeStop(Integer id,String status) {
+	public RetKit changeStop(Integer id,Integer status) {
 		SmSysUser user = findById(id);
 		boolean success = user.setStatus(status).update();
 		return success ? RetKit.ok() : RetKit.fail();

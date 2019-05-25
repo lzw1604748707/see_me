@@ -81,4 +81,13 @@ public abstract class BaseFeedback<M extends BaseFeedback<M>> extends Model<M> i
 		return get("createDate");
 	}
 
+	public M setStatus(java.lang.Integer status) {
+		set("status", status);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getStatus() {
+		return getInt("status");
+	}
+
 }

@@ -26,6 +26,7 @@
       border
       v-loading="loading">
       <el-table-column type="index"
+        :index="realIndex"
         label="序号"
         width="70"></el-table-column>
       <el-table-column prop="name"
@@ -39,10 +40,12 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini"
-            type="info"
+            type="primary"
+            plain
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini"
             type="danger"
+            plain
             @click="handleRemove(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -59,6 +62,7 @@
 
     <el-dialog title="新增/编辑"
       :visible.sync="addEditDialogVisible"
+      @close="closeDialog('addEditDialogVisible')"
       width="800px">
       <!-- 学校详情 -->
       <el-form ref="infoForm"
@@ -90,7 +94,7 @@
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="addEditDialogVisible = false">关闭</el-button>
+        <el-button @click="closeDialog('addEditDialogVisible')">关闭</el-button>
         <el-button type="primary"
           v-if="isEdit"
           @click="handleSubmitUpdate">提交</el-button>
@@ -136,18 +140,30 @@ export default {
       tableData: [],
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
-        username: [{ required: true, message: "请输入所在地", trigger: "blur" }],
+        username: [{ required: true, message: "请输入登录账号", trigger: "blur" }],
         roleId: [{ required: true, message: "请选择权限组" }]
       }
     };
   },
-  created() { },
+  computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    }
+  },
   mounted() {
     this.getList();
     this.getRoleList();
   },
   watch: {},
   methods: {
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
+    },
     handleSizeChange: function (val) {
       this.page.pageSize = val;
       this.getList();
@@ -241,7 +257,7 @@ export default {
       });
     },
     handleRemove: function (index, row) {
-      this.$confirm("确认删除么")
+      this.$confirm(`确认删除${row.name}的管理员身份么`)
         .then(_ => {
           let id = row.id;
           remove(id)

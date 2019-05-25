@@ -6,7 +6,6 @@ import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Page;
 import com.sandu.common.kit.RetKit;
 import com.sandu.common.model.SmPhotoField;
-import com.sandu.common.model.SmPhotoProject;
 
 public class PhotoFieldListService {
 

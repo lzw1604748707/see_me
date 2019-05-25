@@ -16,7 +16,7 @@
         <el-button type="primary"
           @click="handleSearch">搜索</el-button>
         <el-button type="primary"
-          @click="handleAdd">添加用户</el-button>
+          @click="handleAdd">添加作品集</el-button>
       </el-form-item>
     </el-form>
     <!-- 数据表格 -->
@@ -29,6 +29,7 @@
       border>
       <el-table-column type="index"
         label="序号"
+        :index="realIndex"
         width="70"></el-table-column>
       <el-table-column prop="title"
         label="作品集标题"></el-table-column>
@@ -57,14 +58,18 @@
         <template slot-scope="scope">
           <el-button size="mini"
             type="info"
+            plain
             @click="handleRead(scope.row)">查看</el-button>
           <el-button size="mini"
             type="primary"
+            plain
             @click="handleEdit(scope.row)">编辑</el-button>
           <el-button size="mini"
+            plain
             @click="handleDownShelf(scope.$index, scope.row)">{{scope.row.status?'上架':'下架'}}</el-button>
           <el-button size="mini"
             type="danger"
+            plain
             @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -122,6 +127,7 @@
 
     <el-dialog :title="isEdit?'编辑':'新增'"
       :visible.sync="addEditDialogVisible"
+      @close="closeDialog('addEditDialogVisible')"
       width="800px">
       <!-- 用户详情 -->
       <el-form ref="infoForm"
@@ -172,7 +178,7 @@
       v-show="isShowImgPreview"
       @click="isShowImgPreview=false">
       <img class="preview__img"
-        :src="previewImageUrl||'/static/img/system.jpg'"
+        :src="previewImageUrl"
         alt="">
     </div>
   </div>
@@ -222,6 +228,12 @@ export default {
     };
   },
   computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    },
     coverList() {
       return function (coverListStr) {
         return coverListStr ? coverListStr.split(',').splice(0, 5) : []

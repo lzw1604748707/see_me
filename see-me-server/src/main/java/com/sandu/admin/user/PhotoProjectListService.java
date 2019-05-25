@@ -20,7 +20,7 @@ public class PhotoProjectListService {
 		return page;
 	}
 	public List<SmPhotoField> findCreateFileldList() {
-		List<SmPhotoField> fieldList = fieldDao.find("select * from sm_photo_field");
+		List<SmPhotoField> fieldList = fieldDao.find("select * from sm_photo_field where status =1");
 		return fieldList;
 	}
 

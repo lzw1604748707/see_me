@@ -1,6 +1,9 @@
 import axios from 'axios'
 import { getToken } from '@/utils/token'
-import Vue from 'vue'
+// import Vue from 'vue'
+import {Message} from 'element-ui'
+
+
 import qs from 'qs'
 
 axios.defaults.timeout = 10000 // 响应nrpm时间
@@ -32,7 +35,7 @@ axios.interceptors.response.use((res) => {
         // 对响应数据做些事
     if (res.data.code === '501') {
         // 业务失败
-        Vue.$message.warning(res.data.msg)
+        Message.warning(res.data.msg);
         return Promise.reject(res.data.msg)
     } else if (res.data.code === '401') {
         location.href = "/401";

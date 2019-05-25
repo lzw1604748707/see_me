@@ -7,11 +7,9 @@
       label-width="60px"
       class="query-form">
       <el-select v-model="query.feebackType"
-        placeholder="请选择学校"
+        @change="handleSearch"
+        placeholder="请选择反馈类型"
         style="margin-left:10px;">
-        <el-option key="0"
-          label="请选择反馈类型"
-          value=""></el-option>
         <el-option v-for="item in feebackTypeList"
           :key="item.value"
           :label="item.name"
@@ -19,18 +17,18 @@
       </el-select>
       <el-form-item>
         <el-button type="primary"
-          @click="handleSearch">搜索</el-button>
-        <el-button type="primary"
           @click="handleAdd">添加意见</el-button>
       </el-form-item>
     </el-form>
     <!-- 数据表格 -->
     <el-table :data="tableData"
+      ref="feebackTable"
       class="table"
       stripe
       border
       v-loading="loading">
       <el-table-column type="index"
+        :index="realIndex"
         label="序号"
         width="70"></el-table-column>
       <el-table-column prop="account"
@@ -51,25 +49,29 @@
           <span>{{steerType(scope.row.type)}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="createAt"
+      <el-table-column prop="createDate"
         sortable
         label="时间"
         :formatter="formatDate"></el-table-column>
       <el-table-column label="操作"
-        width="100">
+        width="170">
         <template slot-scope="scope">
           <el-button v-if="!scope.row.status"
             size="mini"
             type="primary"
+            plain
             @click="onChangeStatus(scope.$index, 1)">确认</el-button>
           <el-button v-if="scope.row.status&&scope.row.status===1"
             size="mini"
-            type="danger"
-            @click="onChangeStatus(scope.$index, 2)">已处理</el-button>
+            type="success"
+            plain
+            @click="onChangeStatus(scope.$index, 2)">开始处理</el-button>
           <el-button size="mini"
             v-if="scope.row.status&&scope.row.status===1"
             type="danger"
+            plain
             @click="onChangeStatus(scope.$index,3)">回绝</el-button>
+          <div v-if="scope.row.status&&scope.row.status!==1">已处理</div>
         </template>
       </el-table-column>
     </el-table>
@@ -84,6 +86,7 @@
     </el-pagination>
     <el-dialog title="新增"
       :visible.sync="addDialogVisible"
+      @close="closeDialog('addDialogVisible')"
       width="500px">
       <!-- 项目新增 -->
       <el-form ref="infoForm"
@@ -109,14 +112,14 @@
             v-model="infoForm.remark"></el-input>
         </el-form-item>
         <div class="add__prompt">
-          <p>注意：将游客的身份进行建议</p>
+          <p>注意：将以游客的身份进行建议</p>
           <p>(该功能用以避免交互和开发的冲突)</p>
         </div>
 
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="closeDialog">关闭</el-button>
+        <el-button @click="closeDialog('addDialogVisible')">关闭</el-button>
         <el-button type="primary"
           @click="handleSubmitSave">提交</el-button>
       </span>
@@ -141,19 +144,19 @@ export default {
       },
       feebackTypeList: [
         {
-          value: 1,
+          value: 0,
           name: "优化建议"
         },
         {
-          value: 2,
+          value: 1,
           name: "平台问题"
         },
         {
-          value: 3,
+          value: 2,
           name: "合作意向"
         },
         {
-          value: 4,
+          value: 3,
           name: "其他"
         }
       ],
@@ -166,12 +169,18 @@ export default {
         type: [
           { required: true, message: '请选择建议类型', trigger: 'change' }
         ],
-        remark: [{ required: true, message: "请输入建议内容", trigger: "change" }]
+        remark: [{ required: true, message: "请输入建议内容", trigger: "blur" }]
       },
       tableData: []
     };
   },
   computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    },
     identity() {
       return function (userType) {
         let identityList = ['游客', '用户', '合作商']
@@ -186,12 +195,13 @@ export default {
     }
   },
   methods: {
-    closeDialog() {
-      this.addDialogVisible = false
-      this.$refs["infoForm"].resetFields();
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     onChangeStatus(index, status) {
-      let params = { id: this.$refs.projectTable.data[index].id, status: status }
+      let params = { id: this.$refs.feebackTable.data[index].id, status: status }
       if (status !== 1) {
         this.$confirm("确定要执行该操作(请确保处理妥当)？")
           .then(_ => {
@@ -212,6 +222,7 @@ export default {
     },
     handleSearch: function () {
       this.page.pageNumber = 1
+      console.log('触发事件');
       this.getList();
     },
     getList: function () {
@@ -236,7 +247,7 @@ export default {
     reSaveStatus(index, params) {
       reSaveStatus(params).then(res => {
         this.$message.success(res.data.msg);
-        this.$refs.projectTable.data[index].status = params.status
+        this.$refs.feebackTable.data[index].status = params.status
       })
     },
     handleAdd: function () {
@@ -247,8 +258,7 @@ export default {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            this.infoForm.imagesPath = this.extImageList.join(',')
-            let para = Object.assign({}, this.infoForm);
+            let para = Object.assign({ accountId: 0, accountType: 0 }, this.infoForm);
             save(para).then(res => {
               this.$message.success(res.data.msg);
               this.$refs["infoForm"].resetFields();

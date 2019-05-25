@@ -28,6 +28,7 @@
       border>
       <el-table-column type="index"
         label="序号"
+        :index="realIndex"
         width="70"></el-table-column>
       <el-table-column prop="projectName"
         label="作品名称"></el-table-column>
@@ -47,6 +48,7 @@
         <template slot-scope="scope">
           <el-button size="mini"
             type="danger"
+            plain
             @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -65,6 +67,7 @@
 
     <el-dialog title="新增"
       :visible.sync="addDialogVisible"
+      @close="closeDialog('addDialogVisible')"
       width="500px">
       <!-- 用户详情 -->
       <el-form ref="infoForm"
@@ -95,7 +98,7 @@
       <div class="add__prompt">注意：将以看否官方的身份进行留言</div>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="closeDialog">关闭</el-button>
+        <el-button @click="closeDialog('addDialogVisible')">关闭</el-button>
         <el-button type="primary"
           @click="handleSubmitSave">提交</el-button>
       </span>
@@ -134,13 +137,22 @@ export default {
       tableData: []
     };
   },
+  computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    }
+  },
   mounted() {
     this.getList();
   },
   methods: {
-    closeDialog() {
-      this.addDialogVisible = false
-      this.$refs["infoForm"].resetFields();
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     handleSizeChange(val) {
       this.page.pageSize = val
@@ -180,10 +192,9 @@ export default {
         }
       });
     },
-    handleRemove(index, row) {
+    handleDelete(id) {
       this.$confirm("确定刪除吗？")
         .then(_ => {
-          let id = row.id;
           remove(id)
             .then(res => {
               this.$message.success(res.data.msg);

@@ -34,6 +34,7 @@
       border>
       <el-table-column type="index"
         label="序号"
+        :index="realIndex"
         width="70"></el-table-column>
       <el-table-column prop="cover"
         label="封面图"
@@ -65,14 +66,13 @@
       <el-table-column label="操作"
         width="230">
         <template slot-scope="scope">
-          <!-- <el-button size="mini"
-            type="warning"
-            @click="handlePreview(scope.$index, scope.row)">预览</el-button> -->
           <el-button size="mini"
             type="primary"
+            plain
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini"
             type="danger"
+            plain
             @click="handleRemove(scope.$index, scope.row)">刪除</el-button>
         </template>
       </el-table-column>
@@ -92,64 +92,77 @@
     <el-dialog top="2vh"
       :title="isEdit?'编辑':'新增'"
       :visible.sync="addEditDialogVisible"
-      width="60%">
+      @close="closeDialog('addEditDialogVisible')"
+      width="900px">
       <!-- 学校详情 -->
       <el-form ref="infoForm"
         inline
         :model="infoForm"
         :rules="rules"
+        style="margin-top: -20px;"
         label-width="120px">
-        <el-form-item prop="title"
-          label="标题：">
-          <el-input v-model="infoForm.title"
-            placeholder="请输入标题："></el-input>
-        </el-form-item>
-        <el-form-item prop="createField"
-          label="展示领域：">
-          <el-select style="width:300px;"
-            filterable
-            v-model="infoForm.fieldId"
-            placeholder="请选择创作领域">
-            <el-option v-for="field of fieldList"
-              :key="field.id"
-              :label="field.fieldName"
-              :value="field.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="cover"
-          style="width:400px;"
-          label="封面：">
-          <el-upload class="img-uploader"
-            action="/admin/upload"
-            :headers="headers"
-            :show-file-list="false"
-            :on-success="handleCoverSuccess"
-            :on-remove="handleCoverRemove"
-            :before-upload="beforeAvatarUpload">
-            <img class="img"
-              v-if="cover"
-              :src="cover">
-            <i v-else
-              class="el-icon-plus img-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item prop="status"
-          style="margin-left: -80px;"
-          label="状态：">
-          <el-select style="width:300px;"
-            v-model="infoForm.status"
-            placeholder="请选择状态">
-            <el-option :key="0"
-              label="草稿"
-              :value="0"></el-option>
-            <el-option :key="1"
-              label="进行中"
-              :value="1"></el-option>
-            <el-option :key="2"
-              label="过期"
-              :value="2"></el-option>
-          </el-select>
-        </el-form-item>
+        <div class="form__title">基本信息</div>
+        <div style="position: relative;">
+          <el-form-item prop="title"
+            label="标题："
+            style="display:block;">
+            <el-input style="width:300px;"
+              v-model="infoForm.title"
+              placeholder="请输入标题"></el-input>
+          </el-form-item>
+          <el-form-item prop="createField"
+            label="展示领域："
+            style="display:block;">
+            <el-select filterable
+              style="width:300px;"
+              v-model="infoForm.fieldId"
+              placeholder="请选择创作领域">
+              <el-option v-for="field of fieldList"
+                :key="field.id"
+                :label="field.fieldName"
+                :value="field.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="status"
+            label="状态："
+            style="display:block; ">
+            <el-select style="width:300px;"
+              v-model="infoForm.status"
+              placeholder="请选择状态">
+              <el-option :key="0"
+                label="草稿"
+                :value="0"></el-option>
+              <el-option :key="1"
+                label="进行中"
+                :value="1"></el-option>
+              <el-option :key="2"
+                label="过期"
+                :value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="cover"
+            style="position:absolute;right:30px; top:0;"
+            label="封面：">
+            <el-upload style="width:165px;height:165px;"
+              class="img-uploader"
+              action="/admin/upload"
+              :headers="headers"
+              :show-file-list="false"
+              :on-success="handleCoverSuccess"
+              :on-remove="handleCoverRemove"
+              :before-upload="beforeAvatarUpload">
+              <img style="max-width:165px;height:165px;"
+                class="img"
+                v-if="cover"
+                :src="cover">
+              <i v-else
+                style="max-width:165px;height:165px;"
+                class="el-icon-plus img-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+        </div>
+
+        <div class="form__title">内容</div>
         <el-form-item prop="extCover"
           style="display:block;"
           label="配图：">
@@ -166,14 +179,16 @@
         </el-form-item>
         <el-form-item prop="content"
           label="正文">
-          <vue-editor useCustomImageHandler
+          <vue-editor style="width:700px;"
+            useCustomImageHandler
             @imageAdded="handleImageAdded"
             v-model="infoForm.content"></vue-editor>
         </el-form-item>
       </el-form>
       <span slot="footer"
-        class="dialog-footer">
-        <el-button @click="closeDialog">关闭</el-button>
+        class="dialog-footer"
+        style="margin-top: -35px;">
+        <el-button @click="closeDialog('addEditDialogVisible')">关闭</el-button>
         <el-button type="primary"
           v-if="isEdit"
           @click="handleSubmitUpdate">更新</el-button>
@@ -250,6 +265,12 @@ export default {
     };
   },
   computed: {
+    realIndex() {
+      const _this = this
+      return function (index) {
+        return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
+      }
+    },
     statusName() {
       return function (status) {
         const statusNameList = ['草稿', '进行中', '过期']
@@ -263,9 +284,10 @@ export default {
     }
   },
   methods: {
-    closeDialog() {
-      this.addEditDialogVisible = false
-      this.$refs["infoForm"].resetFields();
+    closeDialog(flag) {
+      this[flag] = false
+      this.infoForm = []
+      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     handleSizeChange: function (val) {
       this.page.pageSize = val;
@@ -432,4 +454,9 @@ export default {
 </script>
 
 <style>
+.form__title {
+  font-size: 25px;
+  font-weight: bold;
+  margin: 0 0 20px 60px;
+}
 </style>

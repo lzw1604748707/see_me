@@ -3,6 +3,7 @@ package com.sandu.admin.user;
 import com.jfinal.kit.Kv;
 import com.sandu.common.controller.AdminController;
 import com.sandu.common.kit.RetKit;
+import com.sandu.common.model.SmPhotoCollection;
 import com.sandu.common.model.SmSysUser;;
 
 public class UserListController extends AdminController {
@@ -30,6 +31,7 @@ public class UserListController extends AdminController {
 		renderJson(RetKit.ok("page", userService.followerslist(pageNumber, pageSize, kv)));
 	}
 	public void remove(){
+
 		Integer id = getParaToInt();
 		renderJson(userService.remove(id));
 	}
@@ -45,7 +47,7 @@ public class UserListController extends AdminController {
 	}
 	public void changeFreeze(){
 		Integer id = getParaToInt("id");
-		String  status = getPara("status");
+		Integer  status = getParaToInt("status");
 		renderJson(userService.changeFreeze(id,status));
 	}
 	/**
@@ -53,7 +55,7 @@ public class UserListController extends AdminController {
 	 */
 	public void changeStop(){
 		Integer id = getParaToInt("id");
-		String  status = getPara("status");
+		Integer  status = getParaToInt("status");
 		renderJson(userService.changeStop(id,status));
 	}
 	

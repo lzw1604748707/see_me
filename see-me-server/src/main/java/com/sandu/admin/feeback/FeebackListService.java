@@ -3,12 +3,9 @@ package com.sandu.admin.feeback;
 import java.util.Date;
 
 import com.jfinal.kit.Kv;
-import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
 import com.sandu.common.kit.RetKit;
 import com.sandu.common.model.Feedback;
-import com.sandu.common.model.SysAdv;
 
 public class FeebackListService {
 	
@@ -30,5 +27,15 @@ public class FeebackListService {
 	
 	public boolean deleteById(Integer id){
 		return dao.deleteById(id);
+	}
+	
+	public Feedback findById(Integer id){
+		return dao.findById(id);
+	}
+	//改变当前状态
+	public RetKit changeStatus(Integer id,Integer status) {
+		Feedback feedback = findById(id);
+		boolean success = 	feedback.setStatus(status).update();
+		return success ? RetKit.ok() : RetKit.fail();
 	}
 }

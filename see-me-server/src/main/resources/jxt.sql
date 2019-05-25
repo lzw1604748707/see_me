@@ -2,13 +2,13 @@
 
 #namespace("sm_sys_user")
 	#sql("admin-paginate")
-		select id,name,avatar,account,sex,career,area,userType,mobile,freezeDate,freezeCause,status,createDate,ifnull(fa.followers ,0) as followers, ifnull(fu.followings ,0) as followings
+		select id,name,avatar,account,sex,career,area,userType,mobile,freezeDate,freezeCause,status,createDate,lastLoginDate,ifnull(fa.followers ,0) as followers, ifnull(fu.followings ,0) as followings
 		from sm_sys_user as u
 		left join (select  attentionId, count(userId) as followers from sm_sys_user_attention GROUP BY  attentionId) fa 
 		ON u.id=fa.attentionId 
 		left join (select  userId, count(attentionId) as followings from sm_sys_user_attention GROUP BY  userId) fu 
 		ON u.id=fu.userId 
-		where 1 = 1
+		where isDelete =0
 		#if(sk.notBlank(name))
 			and name like "%"#p(name)"%"
 		#end
@@ -187,9 +187,11 @@
 
 #namespace("feedback")
 	#sql("admin-paginate")
-		select * from feedback where 1 = 1
+		select f.*,u.name as accountName,u.account from feedback  f
+		left join sm_sys_user u on u.id=f.accountId
+		where 1 = 1
 		#if(sk.notBlank(feebackType))
-			and type = #p(feebackType)
+			and f.type = #p(feebackType)
 		#end
 	#end
 #end

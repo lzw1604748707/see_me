@@ -98,7 +98,6 @@
           label="创作领域：">
           <el-select style="width:300px;"
             v-model="infoForm.createFields"
-            @change="getSchoolList"
             placeholder="请选择创作领域">
             <el-option v-for="field of fieldList"
               :key="field.id"
@@ -193,13 +192,7 @@ export default {
       //本来想放在 infoForm 里面的，但是显示不出来
       cover: "",
       extImageList: [],
-      schoolList: [],
-      schoolIdList: [],
-      infoForm: {
-        cover: "",
-        extImageList: [],
-        area: ""
-      },
+      infoForm: {},
       rules: {
         title: [{ required: true, message: "请输入项目标题", trigger: "blur" }],
         cover: [{ required: true, message: "请上传封面", trigger: "change" }]
@@ -268,16 +261,16 @@ export default {
       })
     },
     handlePictureCardPreview: function (file) {
-      this.dialogImageUrl = file.url;
-      this.dialogImgVisible = true;
+      this.previewImageUrl = file.url;
+      this.isShowImgPreview = true;
     },
     handleExtCoverSuccess: function (res, file) {
       this.extImageList.push(res.file);
-      this.infoForm.extImageList = this.extImageList;
+      // this.infoForm.extImageList = this.extImageList;
     },
-    handleExtCoverRemove: function (file, fileList) {
-      this.infoForm.extImageList = this.extImageList;
-    },
+    // handleExtCoverRemove: function (file, fileList) {
+    //   this.infoForm.extImageList = this.extImageList;
+    // },
     handleCoverRemove: function (file, fileList) {
       this.infoForm.cover = "";
     },
@@ -325,7 +318,7 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
-            this.infoForm.schoolIdList = this.schoolIdList;
+            this.infoForm.imagesPath = this.extImageList.join(',')
             let para = Object.assign({}, this.infoForm);
             save(para).then(res => {
               NProgress.done();
@@ -343,6 +336,7 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
+            this.infoForm.imagesPath = this.extImageList.join(',')
             let para = Object.assign({}, this.infoForm);
             update(para).then(res => {
               NProgress.done();

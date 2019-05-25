@@ -6,6 +6,7 @@ import com.jfinal.kit.Kv;
 import com.sandu.common.controller.AdminController;
 import com.sandu.common.kit.RetKit;
 import com.sandu.common.model.SysAdv;
+import com.sandu.common.model.SysInfo;
 
 public class AdvListController extends AdminController {
 
@@ -19,40 +20,21 @@ public class AdvListController extends AdminController {
 		renderJson(RetKit.ok("page", srv.paginate(pageNumber, pageSize, kv)));
 	}
 
-	public void getSchoolList(){
-		String area = getPara("area");
-		renderJson(RetKit.ok("list",srv.findSchoolListByArea(area)));
-	}
-	
-	public void downShelf() {
-		Integer id = getParaToInt();
-		srv.updateShelfStatus(id, false);
-		renderJson(RetKit.ok());
-	}
-
-	public void upShelf() {
-		Integer id = getParaToInt();
-		srv.updateShelfStatus(id, true);
-		renderJson(RetKit.ok());
-	}
-
 	public void save() {
+		String currentSessionId= getHeader("jxtAdminSessionId");
 		SysAdv adv = getBean(SysAdv.class,"");
-		List<String> schoolIdList = getParaToList("schoolIdList");
-		String area = getPara("area");
-		renderJson(RetKit.ok(srv.save(adv,schoolIdList,area)));
+		renderJson(RetKit.ok(srv.save(adv,currentSessionId)));
 	}
 
 	public void remove() {
 		Integer id = getParaToInt();
-		boolean succ = srv.remove(id);
-		renderJson(succ ? RetKit.ok() : RetKit.fail());
+		renderJson(srv.remove(id));
 	}
 
 	public void update() {
+		String currentSessionId= getHeader("jxtAdminSessionId");
 		SysAdv adv = getBean(SysAdv.class,"");
-		renderJson(RetKit.ok(srv.update(adv)));
+		renderJson(RetKit.ok(srv.update(adv,currentSessionId)));
 	}
-
 
 }

@@ -27,24 +27,10 @@ export function update(params) {
         data: params
     })
 }
-export function downShelf(id) {
+export function findCreateFileldList() {
     return fetch({
-        url: '/admin/info/adv/downShelf/' + id,
-        method: 'get'
-    })
-}
-export function upShelf(id) {
-    return fetch({
-        url: '/admin/info/adv/upShelf/' + id,
+        url: '/admin/user/project/findCreateFileldList',
         method: 'get'
     })
 }
 
-
-export function getSchoolList(params) {
-    return fetch({
-        url: '/admin/info/adv/getSchoolList/',
-        method: 'post',
-        data: params
-    })
-}

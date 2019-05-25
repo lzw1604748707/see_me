@@ -10,12 +10,11 @@
             </span>
           </div>
           <ul class="platform-li">
-            <li>当前入住学校数量 <span>{{platform.schoolCount}}</span> 所</li>
-            <li>作品数 <span>{{platform.studentCount}}</span> 人</li>
-            <li>账户数量 <span>{{platform.accountCount}}</span> 个</li>
-            <li>缴费到期学校数量 <span>{{platform.overTimeSchoolCount}}</span> 所</li>
-            <li>广告数量 <span>{{platform.advCount}}</span> 所</li>
-            <li>发布的资讯数量 <span>{{platform.infoCount}}</span> 所</li>
+            <li>已入驻用户总数 <span>{{platform.userCount}}</span></li>
+            <li>平台累计产生的项目数量 <span>{{platform.projectCount}}</span></li>
+            <li>平台累计产生的作品集数量 <span>{{platform.collectionCount}}</span></li>
+            <li>广告数量 <span>{{platform.advCount}}</span></li>
+            <li>发布的资讯数量 <span>{{platform.infoCount}}</span></li>
           </ul>
         </el-card>
       </el-col>
@@ -50,6 +49,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { platformCount, historyOnline } from "@/api/dashBoard";
 export default {
   name: "list",
   components: {
@@ -59,10 +59,9 @@ export default {
     return {
       chartSettings: {},
       platform: {
-        schoolCount: 0,
-        studentCount: 0,
-        accountCount: 0,
-        overTimeSchoolCount: 0,
+        userCount: 0,
+        projectCount: 0,
+        collectionCount: 0,
         advCount: 0,
         infoCount: 0
       },
@@ -73,12 +72,27 @@ export default {
       }
     };
   },
-  created() { },
+  methods: {
+    reFindPlatForm() {
+      console.log('哈哈哈');
+
+      platformCount().then(res => {
+        console.log(res);
+        this.platform = res.data
+      })
+    },
+    reFindHistoryOnline() {
+      // 未实现
+      historyOnline().then(res => {
+        console.log(res);
+      })
+    }
+  },
   mounted() {
     //放到这里是因为渲染问题，如果直接在data默认，css有问题
     this.activeName = "first";
-  },
-  methods: {}
+    this.reFindPlatForm()
+  }
 };
 </script>
 

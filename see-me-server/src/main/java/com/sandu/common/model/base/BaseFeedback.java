@@ -72,13 +72,13 @@ public abstract class BaseFeedback<M extends BaseFeedback<M>> extends Model<M> i
 		return getInt("type");
 	}
 
-	public M setCreateAt(java.util.Date createAt) {
-		set("createAt", createAt);
+	public M setCreateDate(java.util.Date createDate) {
+		set("createDate", createDate);
 		return (M)this;
 	}
 	
-	public java.util.Date getCreateAt() {
-		return get("createAt");
+	public java.util.Date getCreateDate() {
+		return get("createDate");
 	}
 
 }

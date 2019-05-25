@@ -7,7 +7,10 @@
       label-width="70px"
       class="query-form">
       <el-input v-model="query.title"
-        placeholder="请输入广告名称"
+        placeholder="请输入广告标题"
+        style="width:150px;"></el-input>
+      <el-input v-model="query.advName"
+        placeholder="请输入广告商名称"
         style="width:150px;"></el-input>
       <el-form-item>
         <el-button type="primary"
@@ -18,45 +21,48 @@
     </el-form>
     <!-- 数据表格 -->
     <el-table :data="tableData"
+      :header-cell-style="{'text-align':'center'}"
+      :cell-style="{'text-align':'center'}"
       class="table"
       stripe
       border>
       <el-table-column type="index"
         label="序号"
         width="70"></el-table-column>
-      <el-table-column prop="title"
-        label="名称"></el-table-column>
       <el-table-column prop="cover"
         label="封面图"
-        width="70">
+        width="100">
         <template slot-scope="scope">
           <img style="width:30px;height:30px;cursor: pointer;"
             :src="scope.row.cover"
             @click="handleCoverCardPreview(scope.row.cover)">
         </template>
       </el-table-column>
-      <el-table-column prop="accountName"
-        label="外链"></el-table-column>
-      <el-table-column prop="readCount"
-        label="阅读量"></el-table-column>
-      <el-table-column prop="account"
-        label="操作人"></el-table-column>
-      <el-table-column prop="account"
-        label="操作账户"></el-table-column>
+      <el-table-column prop="title"
+        label="广告标题"></el-table-column>
+      <el-table-column prop="advName"
+        label="广告商"></el-table-column>
+      <el-table-column prop="clickCount"
+        label="点击量"></el-table-column>
+      <el-table-column prop="adminName"
+        label="发布人"></el-table-column>
+      <el-table-column prop="fieldName"
+        label="展示领域"></el-table-column>
+      <el-table-column prop="createDate"
+        sortable
+        label="创建时间"
+        :formatter="formatDate"></el-table-column>
       <el-table-column prop="status"
         label="状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.status === true ">上架</span>
-          <span v-else>下架</span>
+          <span>{{statusName(scope.row.status)}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作"
         width="230">
         <template slot-scope="scope">
           <el-button size="mini"
-            type="warning"
-            @click="handleDownShelf(scope.$index, scope.row)">下架</el-button>
-          <el-button size="mini"
+            type="primary"
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini"
             type="danger"
@@ -65,7 +71,9 @@
       </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <el-pagination @size-change="handleSizeChange"
+    <el-pagination class="table__pagination"
+      background
+      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="page.pageNumber"
       :page-sizes="[10, 20, 30, 40]"
@@ -74,90 +82,88 @@
       :total="page.total">
     </el-pagination>
 
-    <el-dialog title="新增/编辑"
+    <el-dialog top="2vh"
+      :title="isEdit?'编辑':'新增'"
       :visible.sync="addEditDialogVisible"
       width="800px">
       <!-- 学校详情 -->
       <el-form ref="infoForm"
         :model="infoForm"
         :rules="rules"
-        label-width="80px">
+        label-width="120px">
         <el-form-item prop="title"
           label="标题：">
           <el-input v-model="infoForm.title"></el-input>
         </el-form-item>
+        <el-form-item prop="createField"
+          label="展示领域：">
+          <el-select style="width:300px;"
+            filterable
+            v-model="infoForm.fieldId"
+            placeholder="请选择创作领域">
+            <el-option v-for="field of fieldList"
+              :key="field.id"
+              :label="field.fieldName"
+              :value="field.id"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item prop="cover"
+          style="width:400px;"
           label="封面：">
-          <el-upload class="avatar-uploader"
+          <el-upload class="img-uploader"
             action="/admin/upload"
             :headers="headers"
             :show-file-list="false"
             :on-success="handleCoverSuccess"
             :on-remove="handleCoverRemove"
             :before-upload="beforeAvatarUpload">
-            <img v-if="cover"
-              :src="cover"
-              class="avatar">
+            <img class="img"
+              v-if="cover"
+              :src="cover">
             <i v-else
-              class="el-icon-plus avatar-uploader-icon"></i>
+              class="el-icon-plus img-uploader-icon"></i>
           </el-upload>
+        </el-form-item>
+        <el-form-item prop="status"
+          label="状态：">
+          <el-select style="width:300px;"
+            v-model="infoForm.status"
+            placeholder="请选择状态">
+            <el-option :key="0"
+              label="草稿"
+              :value="0"></el-option>
+            <el-option :key="1"
+              label="展示中"
+              :value="1"></el-option>
+            <el-option :key="2"
+              label="已失效"
+              :value="2"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item prop="url"
           label="外链：">
           <el-input v-model="infoForm.url"></el-input>
         </el-form-item>
-        <el-form-item prop="schoolIdList"
-          label="范围：">
-          <el-select v-model="infoForm.area"
-            v-if="isEdit === false"
-            @change="handleSelectChange"
-            placeholder="请选择区域">
-            <el-option key="0"
-              label="全部"
-              value="0"></el-option>
-            <el-option key="1"
-              label="澳门"
-              value="澳门"></el-option>
-            <el-option key="2"
-              label="珠海"
-              value="珠海"></el-option>
-            <el-option key="3"
-              label="香港"
-              value="香港"></el-option>
-          </el-select>
-          <el-select v-model="schoolIdList"
-            multiple
-            :disabled="isEdit"
-            @change="handleSelectShcoolChange"
-            placeholder="请选择学校">
-            <el-option key="0"
-              label="全部"
-              value="0"></el-option>
-            <el-option v-for="school in schoolList"
-              :key="school.id"
-              :label="school.name"
-              :value="school.id"></el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
       <span slot="footer"
         class="dialog-footer">
-        <el-button @click="addEditDialogVisible = false">关闭</el-button>
+        <el-button @click="closeDialog">关闭</el-button>
         <el-button type="primary"
           v-if="isEdit"
-          @click="handleSubmitUpdate">提交</el-button>
+          @click="handleSubmitUpdate">更新</el-button>
         <el-button type="primary"
           v-else
-          @click="handleSubmitSave">确定</el-button>
+          @click="handleSubmitSave">提交</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogImgVisible"
-      size="tiny">
-      <img width="100%"
-        :src="dialogImageUrl"
+    <div class="pircture__preview"
+      v-show="isShowImgPreview"
+      @click="isShowImgPreview=false">
+      <img class="preview__img"
+        :src="previewImageUrl"
         alt="">
-    </el-dialog>
+    </div>
 
   </div>
 </template>
@@ -169,41 +175,41 @@ import {
   list,
   remove,
   save,
-  downShelf,
   update,
-  getSchoolList
+  findCreateFileldList
 } from "@/api/adv_list";
 
 export default {
-  components: {},
   data() {
     return {
       query: {
-        title: ""
+        title: "",
+        advName: ''
       },
       addEditDialogVisible: false,
-      dialogImgVisible: false,
-      dialogImageUrl: "",
       isEdit: false,
+
+      isShowImgPreview: false,
+      previewImageUrl: "",
+
+
       page: {
         pageNumber: 1,
         pageSize: 10,
         total: 0
       },
+
+      fieldList: [],
       //本来想放在 infoForm 里面的，但是显示不出来
       cover: "",
-      schoolList: [],
-      schoolIdList: [],
       infoForm: {
-        cover: "",
-        schoolIdList: [],
-        area: ""
+        cover: ""
       },
       rules: {
-        title: [{ required: true, message: "请输入用户昵称", trigger: "blur" }],
+        title: [{ required: true, message: "请输入广告标题", trigger: "blur" }],
         cover: [{ required: true, message: "请上传封面", trigger: "change" }],
         schoolIdList: [
-          { required: true, message: "请选择推送范围", trigger: "change" }
+          { required: true, message: "请选择展示领域", trigger: "change" }
         ]
       },
       tableData: []
@@ -212,8 +218,15 @@ export default {
   created() { },
   mounted() {
     this.getList();
+    this.reFindCreateFieldList();
   },
   computed: {
+    statusName() {
+      return function (status) {
+        const statusNameList = ['草稿', '展示中', '已到期']
+        return statusNameList[status]
+      }
+    },
     headers() {
       return {
         jxtAdminSessionId: this.$store.state.token
@@ -221,31 +234,24 @@ export default {
     }
   },
   methods: {
+    closeDialog() {
+      this.addEditDialogVisible = false
+      this.$refs["infoForm"].resetFields();
+    },
     handleSizeChange: function (val) {
       this.page.pageSize = val;
       this.getList();
-    },
-    handleCoverCardPreview: function (val) {
-      this.dialogImageUrl = val;
-      this.dialogImgVisible = true;
     },
     handleCurrentChange: function (val) {
       this.pageNumber = val;
       this.getList();
     },
-    handleSelectChange: function (val) {
-      this.schoolIdList = [];
-      this.infoForm.area = val;
-      this.getSchoolList(val);
+    handleCoverCardPreview(val) {
+      this.previewImageUrl = val;
+      this.isShowImgPreview = true;
     },
-    handleSelectShcoolChange: function () {
-      this.infoForm.schoolIdList = this.schoolIdList;
-    },
-    formatDateJoinAt: function (row, column) {
-      return this.$moment(row.joinAt).format("YYYY-MM-DD");
-    },
-    formatDateNextPayAt: function (row, column) {
-      return this.$moment(row.nextPayAt).format("YYYY-MM-DD");
+    formatDate(...dataList) {
+      return this.$moment(dataList[2]).format("YYYY-MM-DD");
     },
     handleSearch: function () {
       this.getList();
@@ -261,13 +267,11 @@ export default {
       this.isEdit = true;
       this.infoForm = Object.assign({}, row);
       this.cover = this.infoForm.cover;
-      this.schoolIdList = row.schoolIdList;
-      this.getSchoolList(0);
       this.addEditDialogVisible = true;
     },
     handlePictureCardPreview: function (file) {
-      this.dialogImageUrl = file.url;
-      this.dialogImgVisible = true;
+      this.previewImageUrl = file.url;
+      this.isShowImgPreview = true;
     },
     handleCoverRemove: function (file, fileList) {
       this.infoForm.cover = "";
@@ -276,11 +280,11 @@ export default {
       this.cover = res.file.url;
       this.infoForm.cover = res.file.url;
     },
-    beforeAvatarUpload: function (file) {
+    beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg" || "image/png";
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
-        this.$message.error("上传图片只能是 JPG或 png 格式!");
+        this.$message.error("上传图片只能是 JPG或者 png 格式!");
       }
       if (!isLt2M) {
         this.$message.error("上传图片大小不能超过 2MB!");
@@ -294,7 +298,6 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
-            this.infoForm.schoolIdList = this.schoolIdList;
             let para = Object.assign({}, this.infoForm);
             save(para).then(res => {
               NProgress.done();
@@ -339,33 +342,17 @@ export default {
         })
         .catch(_ => { });
     },
-    handleDownShelf: function (index, row) {
-      this.$confirm("确定下架吗？")
-        .then(_ => {
-          let id = row.id;
-          downShelf(id)
-            .then(res => {
-              this.infoForm.status = false;
-              this.getList();
-              this.$message.success(res.data.msg);
-            })
-            .catch(error => {
-              this.$message.error(error);
-            });
-        })
-        .catch(_ => { });
-    },
+
     getList: function () {
       let params = {
         title: this.query.title,
+        advName: this.query.advName,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
       };
       list(params)
         .then(res => {
           this.tableData = res.data.page.list;
-          this.page.pageNumber = res.data.page.pageNumber;
-          this.page.pageSize = res.data.page.pageSize;
           this.page.total = res.data.page.totalRow;
         })
         .catch(error => {
@@ -373,31 +360,15 @@ export default {
           console.log(error);
         });
     },
-    getSchoolList: function (val) {
-      if (this.isEdit === false) {
-        this.infoForm.schoolIdList = [];
-      }
-      let params = {
-        area: val
-      };
-      getSchoolList(params)
-        .then(res => {
-          this.schoolList = res.data.list;
-        })
-        .catch(error => {
-          this.$message.error(error);
-          console.log(error);
-        });
+    reFindCreateFieldList() {
+      findCreateFileldList().then(res => {
+        this.fieldList = res.data
+        console.log('参数', this.fieldList);
+      })
     }
   }
 };
 </script>
 
 <style>
-.school-item {
-  margin-bottom: 1px;
-}
-.school-name {
-  font-weight: 700;
-}
 </style>

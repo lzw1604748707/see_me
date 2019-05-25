@@ -116,6 +116,8 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let params = Object.assign({}, this.infoForm);
+          console.log(params);
+
           resetPassword(params)
             .then(res => {
               logout();

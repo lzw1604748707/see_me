@@ -6,6 +6,7 @@ import com.sandu.admin.admin.RoleController;
 import com.sandu.admin.common.controller.IndexController;
 import com.sandu.admin.common.interceptor.AdminAuthInterceptor;
 import com.sandu.admin.common.interceptor.AdminLoginInterceptor;
+import com.sandu.admin.dashboard.DashBoardController;
 import com.sandu.admin.feeback.FeebackListController;
 import com.sandu.admin.info.AdvListController;
 import com.sandu.admin.info.InfoListController;
@@ -44,6 +45,8 @@ public class AdminRoutes extends Routes {
 		this.add("/admin/login", LoginController.class);
 		//个人模块
 		this.add("/admin/my",MyController.class);
+		//看板模快
+		this.add("/admin/dashBoard",DashBoardController.class);
 
 	}
 

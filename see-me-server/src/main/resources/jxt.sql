@@ -1,4 +1,5 @@
 
+
 #namespace("sm_sys_user")
 	#sql("admin-paginate")
 		select id,name,avatar,account,sex,career,area,userType,mobile,freezeDate,freezeCause,status,createDate,ifnull(fa.followers ,0) as followers, ifnull(fu.followings ,0) as followings
@@ -47,6 +48,22 @@
 		#if(sk.notBlank(author))
 			and u.name like "%"#p(author)"%"
 		#end
+	#end
+#end
+#namespace("dash-board")
+	#sql("platform")
+		SELECT sum(projectCount) as projectCount,sum(collectionCount) as collectionCount,sum(userCount) as userCount,sum(advCount) as advCount,sum(infoCount) as infoCount
+		FROM (
+		    SELECT count(*) as projectCount,0 as collectionCount,0 as  userCount,0 as advCount,0 as infoCount FROM sm_photo_project 
+	  		UNION ALL
+	  		SELECT 0 as projectCount,0 as collectionCount,count(*) as userCount,0 as advCount,0 as infoCount  FROM sm_sys_user
+	  		UNION ALL
+	  		SELECT 0 as projectCount,count(*) as collectionCount,0 as userCount,0 as advCount,0 as infoCount  FROM sm_photo_collection
+			UNION ALL
+	  		SELECT 0 as projectCount,0 as collectionCount,0 as userCount,count(*) as advCount,0 as infoCount  FROM sys_adv
+			UNION ALL
+	  		SELECT 0 as projectCount,0 as collectionCount,0 as userCount,0 as advCount,count(*) as  infoCount  FROM sys_info
+		 ) count
 	#end
 #end
 #namespace("sm_photo_collection")
@@ -121,75 +138,6 @@
 	#end
 #end
 
-#namespace("school")
-	#sql("admin-paginate")
-		select a.*	from school a  where a.status < 99
-		#if(sk.notBlank(name))
-			and a.name = #p(name)
-		#end
-		order by nextPayAt
-	#end
-#end
-
-#namespace("student")
-	#sql("admin-paginate")
-		select a.*,b.name as schoolName, c.name as gradeName from student a 
-		left join school b on a.schoolId = b.id
-		left join grade c on a.gradeId = c.id
-		left join classes d on a.classId = d.id
-		where 1=1
-		#if(sk.notBlank(schoolId))
-			and a.schoolId = #p(schoolId)
-		#end
-		#if(sk.notBlank(gradeId))
-			and a.gradeId = #p(gradeId)
-		#end
-		#if(sk.notBlank(name))
-			and a.name = #p(name)
-		#end
-		#if(sk.notBlank(studentCode))
-			and a.studentCode = #p(studentCode)
-		#end
-	#end
-#end
-
-
-#namespace("teacher")
-	#sql("admin-paginate")
-		select a.*,b.name as schoolName from teacher a 
-		left join school b on a.schoolId = b.id
-		where 1=1
-		#if(sk.notBlank(schoolId))
-			and a.schoolId = #p(schoolId)
-		#end
-		#if(sk.notBlank(name))
-			and a.name = #p(name)
-		#end
-		
-	#end
-#end
-
-
-#namespace("parent")
-	#sql("admin-paginate")
-		select a.phone as parentPhone,a.name as parentName,studentCode,c.name as schoolName,d.name as studentName from parent_account a
-		left join parent_student b on a.id = b.parentId
-		left join student d on d.id = b.studentId
-		left join school c on d.schoolId = c.id
-		where 1 = 1
-		#if(sk.notBlank(schoolId))
-			and d.schoolId = #p(schoolId)
-		#end
-		#if(sk.notBlank(studentName))
-			and d.name = #p(studentName)
-		#end
-		#if(sk.notBlank(studentCode))
-			and d.studentCode = #p(studentCode)
-		#end
-	#end
-#end
-
-
 #namespace("school_introduction")
 	#sql("admin-list")
 		select a.*,b.area,b.name from school_introduction a 
@@ -204,26 +152,34 @@
 
 #namespace("sys_info")
 	#sql("admin-paginate")
-		select a.*,b.name as accountName  from sys_info a 
-		left join sys_account b on a.accountId = b.id
-		where 1 = 1
+		select i.*,a.name as adminName,f.fieldName from sys_info i
+		left join sys_account a on i.adminId = a.id
+		left join sm_photo_field f on f.id=i.fieldId
+		where i.isDelete=0
 		#if(sk.notBlank(title))
-			and a.title = #p(title)
+			and i.title = #p(title)
 		#end
-		order by a.createAt
+		#if(sk.notBlank(adminName))
+			and a.name = #p(adminName)
+		#end
+		order by i.createDate
 	#end
 #end
 
 
 #namespace("sys_adv")
 	#sql("admin-paginate")
-		select a.*,b.name as accountName  from sys_adv a 
-		left join sys_account b on a.accountId = b.id
-		where 1 = 1
+		select ad.*,a.name as adminName,f.fieldName from sys_adv ad 
+		left join sys_account a on ad.adminId = a.id
+		left join sm_photo_field f on f.id=ad.fieldId
+		where ad.isDelete=0
 		#if(sk.notBlank(title))
-			and a.title = #p(title)
+			and ad.title = #p(title)
 		#end
-		order by a.createAt
+		#if(sk.notBlank(advName))
+			and ad.advName = #p(advName)
+		#end
+		order by ad.createDate
 	#end
 #end
 

@@ -1,9 +1,5 @@
 package com.sandu.common.model;
 
-import java.util.List;
-
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Record;
 import com.sandu.common.model.base.BaseSysInfo;
 
 /**
@@ -12,13 +8,4 @@ import com.sandu.common.model.base.BaseSysInfo;
 @SuppressWarnings("serial")
 public class SysInfo extends BaseSysInfo<SysInfo> {
 	public static final SysInfo dao = new SysInfo().dao();
-	
-	public List<Record> getExtCover(){
-		return Db.find("select infoId,url from sys_info_ext_cover where infoId = ? ",getId());
-	}
-	
-	
-	public List<Record> getPushSchool(){
-		return Db.find("select schoolId from sys_info_push_school where infoId = ?",getId());
-	}
 }

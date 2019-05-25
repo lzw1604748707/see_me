@@ -7,6 +7,14 @@ export function list(params) {
         data: params
     })
 }
+
+export function findById(params) {
+    return fetch({
+        url: '/admin/info/information/findById',
+        method: 'post',
+        data: params
+    })
+}
 export function remove(id) {
     return fetch({
         url: '/admin/info/information/remove/' + id,
@@ -27,24 +35,10 @@ export function update(params) {
         data: params
     })
 }
-export function downShelf(id) {
+export function findCreateFileldList() {
     return fetch({
-        url: '/admin/info/information/downShelf/' + id,
-        method: 'get'
-    })
-}
-export function upShelf(id) {
-    return fetch({
-        url: '/admin/info/information/upShelf/' + id,
+        url: '/admin/user/project/findCreateFileldList',
         method: 'get'
     })
 }
 
-
-export function getSchoolList(params) {
-    return fetch({
-        url: '/admin/info/information/getSchoolList/',
-        method: 'post',
-        data: params
-    })
-}

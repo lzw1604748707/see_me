@@ -45,58 +45,76 @@ public abstract class BaseSysAdv<M extends BaseSysAdv<M>> extends Model<M> imple
 		return getStr("cover");
 	}
 
-	public M setAccount(java.lang.String account) {
-		set("account", account);
+	public M setAdminId(java.lang.Integer adminId) {
+		set("adminId", adminId);
 		return (M)this;
 	}
 	
-	public java.lang.String getAccount() {
-		return getStr("account");
+	public java.lang.Integer getAdminId() {
+		return getInt("adminId");
 	}
 
-	public M setAccountId(java.lang.Integer accountId) {
-		set("accountId", accountId);
+	public M setClickCount(java.lang.Integer clickCount) {
+		set("clickCount", clickCount);
 		return (M)this;
 	}
 	
-	public java.lang.Integer getAccountId() {
-		return getInt("accountId");
+	public java.lang.Integer getClickCount() {
+		return getInt("clickCount");
 	}
 
-	public M setReadCount(java.lang.Integer readCount) {
-		set("readCount", readCount);
-		return (M)this;
-	}
-	
-	public java.lang.Integer getReadCount() {
-		return getInt("readCount");
-	}
-
-	public M setStatus(java.lang.Boolean status) {
+	public M setStatus(java.lang.Integer status) {
 		set("status", status);
 		return (M)this;
 	}
 	
-	public java.lang.Boolean getStatus() {
-		return get("status");
+	public java.lang.Integer getStatus() {
+		return getInt("status");
 	}
 
-	public M setCreateAt(java.util.Date createAt) {
-		set("createAt", createAt);
+	public M setCreateDate(java.util.Date createDate) {
+		set("createDate", createDate);
 		return (M)this;
 	}
 	
-	public java.util.Date getCreateAt() {
-		return get("createAt");
+	public java.util.Date getCreateDate() {
+		return get("createDate");
 	}
 
-	public M setUpdateAt(java.util.Date updateAt) {
-		set("updateAt", updateAt);
+	public M setUpdateDate(java.util.Date updateDate) {
+		set("updateDate", updateDate);
 		return (M)this;
 	}
 	
-	public java.util.Date getUpdateAt() {
-		return get("updateAt");
+	public java.util.Date getUpdateDate() {
+		return get("updateDate");
+	}
+
+	public M setIsDelete(java.lang.Integer isDelete) {
+		set("isDelete", isDelete);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getIsDelete() {
+		return getInt("isDelete");
+	}
+
+	public M setAdvName(java.lang.String advName) {
+		set("advName", advName);
+		return (M)this;
+	}
+	
+	public java.lang.String getAdvName() {
+		return getStr("advName");
+	}
+
+	public M setFieldId(java.lang.Integer fieldId) {
+		set("fieldId", fieldId);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getFieldId() {
+		return getInt("fieldId");
 	}
 
 }

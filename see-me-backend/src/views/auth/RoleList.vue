@@ -130,6 +130,7 @@ export default {
     closeDialog(flag) {
       this[flag] = false
       this.infoForm = []
+      this.$refs.tree.setCheckedKeys([]);
       if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     handleSizeChange: function (val) {

@@ -23,7 +23,7 @@ public class AdvListController extends AdminController {
 	public void save() {
 		String currentSessionId= getHeader("jxtAdminSessionId");
 		SysAdv adv = getBean(SysAdv.class,"");
-		renderJson(RetKit.ok(srv.save(adv,currentSessionId)));
+		renderJson(srv.save(adv,currentSessionId));
 	}
 
 	public void remove() {
@@ -34,7 +34,7 @@ public class AdvListController extends AdminController {
 	public void update() {
 		String currentSessionId= getHeader("jxtAdminSessionId");
 		SysAdv adv = getBean(SysAdv.class,"");
-		renderJson(RetKit.ok(srv.update(adv,currentSessionId)));
+		renderJson(srv.update(adv,currentSessionId));
 	}
 
 }

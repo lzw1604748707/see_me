@@ -18,24 +18,6 @@ public abstract class BaseFeedback<M extends BaseFeedback<M>> extends Model<M> i
 		return getInt("id");
 	}
 
-	public M setAccountName(java.lang.String accountName) {
-		set("accountName", accountName);
-		return (M)this;
-	}
-	
-	public java.lang.String getAccountName() {
-		return getStr("accountName");
-	}
-
-	public M setAccount(java.lang.String account) {
-		set("account", account);
-		return (M)this;
-	}
-	
-	public java.lang.String getAccount() {
-		return getStr("account");
-	}
-
 	public M setAccountType(java.lang.Integer accountType) {
 		set("accountType", accountType);
 		return (M)this;

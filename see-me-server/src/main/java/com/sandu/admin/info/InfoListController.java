@@ -27,7 +27,7 @@ public class InfoListController extends AdminController {
 	public void save() {
 		String currentSessionId= getHeader("jxtAdminSessionId");
 		SysInfo info = getBean(SysInfo.class,"");
-		renderJson(RetKit.ok(srv.save(info,currentSessionId)));
+		renderJson(srv.save(info,currentSessionId));
 	}
 
 	public void remove() {
@@ -38,7 +38,7 @@ public class InfoListController extends AdminController {
 	public void update() {
 		String currentSessionId= getHeader("jxtAdminSessionId");
 		SysInfo info = getBean(SysInfo.class,"");
-		renderJson(RetKit.ok(srv.update(info,currentSessionId)));
+		renderJson(srv.update(info,currentSessionId));
 	}
 
 

@@ -108,4 +108,13 @@ public abstract class BaseSysInfo<M extends BaseSysInfo<M>> extends Model<M> imp
 		return getInt("fieldId");
 	}
 
+	public M setImagesPath(java.lang.String imagesPath) {
+		set("imagesPath", imagesPath);
+		return (M)this;
+	}
+	
+	public java.lang.String getImagesPath() {
+		return getStr("imagesPath");
+	}
+
 }

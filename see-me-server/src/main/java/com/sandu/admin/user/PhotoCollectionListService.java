@@ -54,9 +54,11 @@ public class PhotoCollectionListService {
 		int collectionId = collection.getId();
 		Db.update("delete FROM sm_photo_collection_record WHERE collectionId=?",collectionId);
 		String[] projectIdList= projectIds.split(",");
+		if(projectIdList[0] != "") {
 		int length=projectIdList.length;
 		for (int i=0;i<length;i++) {
 			Db.update("insert into sm_photo_collection_record(collectionId,projectId,createDate) values(?,?,?)",collectionId,Integer.parseInt(projectIdList[i]),new Date());
+		}
 		}
 		return success ? RetKit.ok() : RetKit.fail();
 	}

@@ -155,7 +155,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   &__title {
-    color: #ceffdd;
+    color: #fff;
     font-size: 30px;
     margin-left: 30px;
   }

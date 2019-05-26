@@ -130,23 +130,11 @@
 		left join sys_role b on a.roleId = b.id
 		where 1 = 1
 		#if(sk.notBlank(name))
-			and a.name = #p(name)
+			and a.name like "%"#p(name)"%"
 		#end
 		#if(sk.notBlank(username))
-			and a.username = #p(username)
+			and a.username like "%"#p(username)"%"
 		#end
-	#end
-#end
-
-#namespace("school_introduction")
-	#sql("admin-list")
-		select a.*,b.area,b.name from school_introduction a 
-		left join school b on a.schoolId = b.id
-		where 1 = 1
-		#if(sk.notBlank(schoolId))
-			and a.id = #p(schoolId)
-		#end
-		order by a.updateAt
 	#end
 #end
 
@@ -157,10 +145,10 @@
 		left join sm_photo_field f on f.id=i.fieldId
 		where i.isDelete=0
 		#if(sk.notBlank(title))
-			and i.title = #p(title)
+			and i.title like "%"#p(title)"%"
 		#end
-		#if(sk.notBlank(adminName))
-			and a.name = #p(adminName)
+		#if(sk.notBlank(fieldId))
+			and f.id = #p(fieldId)
 		#end
 		order by i.createDate
 	#end
@@ -192,6 +180,9 @@
 		where 1 = 1
 		#if(sk.notBlank(feebackType))
 			and f.type = #p(feebackType)
+		#end
+		#if(sk.notBlank(status))
+			and f.status = #p(status)
 		#end
 	#end
 #end

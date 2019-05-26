@@ -108,7 +108,7 @@ public class RoleService {
 
 	public RetKit save(List<String> menus, String name) {
 		if (isExistName(name)) {
-			return RetKit.fail("權限組名稱已存在");
+			return RetKit.fail("权限名称已存在");
 		}
 		boolean succ = Db.tx(new IAtom() {
 			@Override
@@ -134,10 +134,10 @@ public class RoleService {
 
 	public RetKit update(List<String> menus, SysRole role) {
 		if (role.getId() == null || role.getId() == 0) {
-			return RetKit.fail("參數錯誤");
+			return RetKit.fail("参数错误");
 		}
 		if (isExistName(role.getName(),role.getId())) {
-			return RetKit.fail("權限組名稱已存在");
+			return RetKit.fail("权限组已存在");
 		}
 		boolean succ = role.setUpdateAt(new Date()).update();
 		// 先删除再插入
@@ -159,7 +159,7 @@ public class RoleService {
 
 	public RetKit remove(Integer id) {
 		if (isExistAccountRole(id)) {
-			return RetKit.fail("該權限組被使用中，不能刪除");
+			return RetKit.fail("该权限组被使用中，不能刪除");
 		}
 		boolean succ = roleDao.deleteById(id);
 		deleteRoleMenuByRoleId(id);

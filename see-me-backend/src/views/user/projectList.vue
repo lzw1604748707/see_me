@@ -196,6 +196,7 @@ export default {
       fieldList: [],
       //本来想放在 infoForm 里面的，但是显示不出来
       cover: "",
+      linkImageList: [],
       extImageList: [],
       infoForm: {},
       rules: {
@@ -253,13 +254,14 @@ export default {
     handleAdd: function () {
       this.isEdit = false;
       this.cover = "";
-      this.extImageList = [];
+      this.linkImageList = []
       this.infoForm = Object.assign({}, null);
       this.addEditDialogVisible = true;
       this.reFindCreateFieldList()
     },
     handleEdit: function (index, row) {
       this.isEdit = true;
+      this.linkImageList = []
       this.reFindCreateFieldList()
       this.reFindDetailByid(row.id)
     },
@@ -272,6 +274,7 @@ export default {
         if (this.infoForm.imagesPath) {
           this.infoForm.imagesPath.split(',').forEach(imageUrl => {
             tempImageList.push({ url: imageUrl })
+            this.linkImageList.push({ url: imageUrl })
           })
         }
         this.extImageList = tempImageList;
@@ -282,12 +285,19 @@ export default {
       this.previewImageUrl = file.url;
       this.isShowImgPreview = true;
     },
-    handleExtCoverSuccess: function (res, file) {
-      this.extImageList.push(res.file);
+    handleExtCoverSuccess(res) {
+      this.linkImageList.push(res.file);
     },
-    // handleExtCoverRemove: function (file, fileList) {
-    //   this.infoForm.extImageList = this.extImageList;
-    // },
+    handleExtCoverRemove(res) {
+      let removeImageIndex = 0
+      if (res.response) {
+        removeImageIndex = this.linkImageList.findIndex(file => file.name === res.response.file.name);
+        this.linkImageList.splice(removeImageIndex, 1)
+      } else {
+        removeImageIndex = this.linkImageList.findIndex(file => file.uid === res.uid);
+        this.linkImageList.splice(removeImageIndex, 1)
+      }
+    },
     handleCoverRemove: function (file, fileList) {
       this.infoForm.cover = "";
     },
@@ -335,13 +345,13 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
-            this.infoForm.imagesPath = this.extImageList.join(',')
+            this.addEditDialogVisible = false;
+            this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
             let para = Object.assign({}, this.infoForm);
             save(para).then(res => {
               NProgress.done();
               this.$message.success(res.data.msg);
               this.$refs["infoForm"].resetFields();
-              this.addEditDialogVisible = false;
               this.getList();
             });
           });
@@ -353,13 +363,13 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
-            this.infoForm.imagesPath = this.extImageList.join(',')
+            this.addEditDialogVisible = false;
+            this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
             let para = Object.assign({}, this.infoForm);
             update(para).then(res => {
               NProgress.done();
               this.$message.success(res.data.msg);
               this.$refs["infoForm"].resetFields();
-              this.addEditDialogVisible = false;
               this.getList();
             });
           });

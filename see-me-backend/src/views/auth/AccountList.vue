@@ -9,7 +9,7 @@
       <el-input v-model="query.name"
         placeholder="请输入管理员姓名"
         style="width:150px;margin-left:10px;"></el-input>
-      <el-input v-model="query.username"
+      <el-input v-model="query.account"
         placeholder="请输入账号"
         style="width:150px;"></el-input>
       <el-form-item>
@@ -79,12 +79,10 @@
         </el-form-item>
         <el-form-item prop="roleId"
           label="权限组：">
-          <el-select v-model="selectRoleId"
+          <el-select v-model="infoForm.roleId"
+            :disabled="infoForm.roleId===0"
+            :title="infoForm.roleId===0?'不能修改超级管理员的权限':''"
             placeholder="请选择权限组">
-            <el-option key="0"
-              v-if="infoForm.roleId === 0"
-              label="超级管理员"
-              value="0"></el-option>
             <el-option v-for="role in roleList"
               :key="role.id"
               :label="role.name"
@@ -116,16 +114,15 @@ export default {
     return {
       query: {
         name: "",
-        username: ""
+        account: ""
       },
       loading: false,
       addEditDialogVisible: false,
       isEdit: false,
-      selectRoleId: "",
       infoForm: {
         id: "",
         name: "",
-        roleId: "0"
+        roleId: ""
       },
       defaultProps: {
         children: "children",
@@ -141,7 +138,7 @@ export default {
       rules: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
         username: [{ required: true, message: "请输入登录账号", trigger: "blur" }],
-        roleId: [{ required: true, message: "请选择权限组" }]
+        roleId: [{ required: true, message: "请选择权限组", trigger: "blur" }]
       }
     };
   },
@@ -189,7 +186,7 @@ export default {
     },
     getList: function () {
       let params = {
-        username: this.query.username,
+        username: this.query.account,
         name: this.query.name,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
@@ -220,7 +217,6 @@ export default {
         });
     },
     handleSubmitSave: function () {
-      this.infoForm.roleId = this.selectRoleId;
       this.$refs.infoForm.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
@@ -238,7 +234,6 @@ export default {
       });
     },
     handleSubmitUpdate: function () {
-      this.infoForm.roleId = this.selectRoleId;
       this.$refs.infoForm.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {

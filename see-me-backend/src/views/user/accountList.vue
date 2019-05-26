@@ -417,7 +417,7 @@ export default {
     formatDate(...dataList) {
       console.log('时间比', dataList);
 
-      return this.$moment(dataList[2]).format("YYYY-MM-DD HH:mm:ss");
+      return dataList[2] ? this.$moment(dataList[2]).format("YYYY-MM-DD HH:mm:ss") : '';
     },
     handleRead: function (index, row) {
       this.infoDialogVisible = true;

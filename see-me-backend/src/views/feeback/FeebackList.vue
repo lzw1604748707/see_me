@@ -10,7 +10,22 @@
         @change="handleSearch"
         placeholder="请选择反馈类型"
         style="margin-left:10px;">
+        <el-option :key="-1"
+          label="全部"
+          value=""></el-option>
         <el-option v-for="item in feebackTypeList"
+          :key="item.value"
+          :label="item.name"
+          :value="item.value"></el-option>
+      </el-select>
+      <el-select v-model="query.status"
+        @change="handleSearch"
+        placeholder="请选择处理状态"
+        style="margin-left:10px;">
+        <el-option :key="-1"
+          label="全部"
+          value=""></el-option>
+        <el-option v-for="item in statusList"
           :key="item.value"
           :label="item.name"
           :value="item.value"></el-option>
@@ -49,29 +64,39 @@
           <span>{{steerType(scope.row.type)}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="type"
+        label="类型">
+        <template slot-scope="scope">
+          <span>{{statusName(scope.row.status)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="createDate"
         sortable
-        label="时间"
+        label="创建时间"
         :formatter="formatDate"></el-table-column>
       <el-table-column label="操作"
-        width="170">
+        width="230">
         <template slot-scope="scope">
-          <el-button v-if="!scope.row.status"
+          <el-button size="mini"
+            type="danger"
+            plain
+            @click="handleRemove(scope.row)">删除</el-button>
+          <el-button v-if="scope.row.status===0"
             size="mini"
             type="primary"
             plain
             @click="onChangeStatus(scope.$index, 1)">确认</el-button>
-          <el-button v-if="scope.row.status&&scope.row.status===1"
+          <el-button v-if="scope.row.status===1"
             size="mini"
             type="success"
             plain
-            @click="onChangeStatus(scope.$index, 2)">开始处理</el-button>
+            @click="onChangeStatus(scope.$index, 2)">已处理</el-button>
           <el-button size="mini"
-            v-if="scope.row.status&&scope.row.status===1"
-            type="danger"
+            v-if="scope.row.status===1"
+            type="warning"
             plain
             @click="onChangeStatus(scope.$index,3)">回绝</el-button>
-          <div v-if="scope.row.status&&scope.row.status!==1">已处理</div>
+
         </template>
       </el-table-column>
     </el-table>
@@ -134,7 +159,8 @@ export default {
   data() {
     return {
       query: {
-        feebackType: ""
+        feebackType: "",
+        status: ''
       },
       loading: false,
       page: {
@@ -160,6 +186,24 @@ export default {
           name: "其他"
         }
       ],
+      statusList: [
+        {
+          value: 0,
+          name: "待确认"
+        },
+        {
+          value: 1,
+          name: "已确认"
+        },
+        {
+          value: 2,
+          name: "已处理"
+        },
+        {
+          value: 3,
+          name: "已回绝"
+        }
+      ],
       addDialogVisible: false,
       infoForm: {
         remark: '',
@@ -183,16 +227,23 @@ export default {
     },
     identity() {
       return function (userType) {
-        let identityList = ['游客', '用户', '合作商']
+        const identityList = ['游客', '用户', '合作商']
         return identityList[userType]
       }
     },
     steerType() {
       return function (type) {
-        let steerTypeList = ['优化', '平台问题反馈', '合作', '其他']
+        const steerTypeList = ['优化', '平台问题反馈', '合作', '其他']
         return steerTypeList[type]
       }
+    },
+    statusName() {
+      return function (status) {
+        const statusList = ['待确认', '已确认', '已处理', '已回绝']
+        return statusList[status]
+      }
     }
+
   },
   methods: {
     closeDialog(flag) {
@@ -228,6 +279,7 @@ export default {
     getList: function () {
       let params = {
         feebackType: this.query.feebackType,
+        status: this.query.status,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
       };
@@ -269,7 +321,7 @@ export default {
         }
       });
     },
-    handleRemove: function (index, row) {
+    handleRemove(row) {
       this.$confirm("确定删除吗？")
         .then(_ => {
           let id = row.id;

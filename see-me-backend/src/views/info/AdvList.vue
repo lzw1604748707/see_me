@@ -95,13 +95,19 @@
         :model="infoForm"
         :rules="rules"
         label-width="120px">
+        <el-form-item prop="title"
+          label="标题："
+          style="display:block;">
+          <el-input v-model="infoForm.title"
+            placeholder="请输入标题"></el-input>
+        </el-form-item>
         <div style="position: relative;">
-          <el-form-item prop="title"
-            label="标题："
+          <el-form-item prop="advName"
+            label="广告商："
             style="display:block;">
             <el-input style="width:300px;"
-              v-model="infoForm.title"
-              placeholder="请输入标题"></el-input>
+              v-model="infoForm.advName"
+              placeholder="请输入广告商名称"></el-input>
           </el-form-item>
           <el-form-item prop="createField"
             label="展示领域："
@@ -154,56 +160,6 @@
             </el-upload>
           </el-form-item>
         </div>
-
-        <!-- <el-form-item prop="title"
-          label="标题：">
-          <el-input v-model="infoForm.title"></el-input>
-        </el-form-item>
-        <el-form-item prop="createField"
-          label="展示领域：">
-          <el-select style="width:300px;"
-            filterable
-            v-model="infoForm.fieldId"
-            placeholder="请选择创作领域">
-            <el-option v-for="field of fieldList"
-              :key="field.id"
-              :label="field.fieldName"
-              :value="field.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="cover"
-          style="width:400px;"
-          label="封面：">
-          <el-upload class="img-uploader"
-            action="/admin/upload"
-            :headers="headers"
-            :show-file-list="false"
-            :on-success="handleCoverSuccess"
-            :on-remove="handleCoverRemove"
-            :before-upload="beforeAvatarUpload">
-            <img class="img"
-              v-if="cover"
-              :src="cover">
-            <i v-else
-              class="el-icon-plus img-uploader-icon"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item prop="status"
-          label="状态：">
-          <el-select style="width:300px;"
-            v-model="infoForm.status"
-            placeholder="请选择状态">
-            <el-option :key="0"
-              label="草稿"
-              :value="0"></el-option>
-            <el-option :key="1"
-              label="展示中"
-              :value="1"></el-option>
-            <el-option :key="2"
-              label="已失效"
-              :value="2"></el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item prop="url"
           label="外链：">
           <el-input style="width: 615px;"
@@ -256,7 +212,6 @@ export default {
 
       isShowImgPreview: false,
       previewImageUrl: "",
-
 
       page: {
         pageNumber: 1,
@@ -433,11 +388,13 @@ export default {
         this.fieldList = res.data
         console.log('参数', this.fieldList);
       })
-    },
-    mounted() {
-      this.getList();
-      this.reFindCreateFieldList();
     }
+
+  },
+  mounted() {
+    this.getList();
+    console.log('触发');
+    this.reFindCreateFieldList();
   }
 };
 </script>

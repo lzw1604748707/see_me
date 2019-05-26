@@ -89,7 +89,7 @@
       :total="page.total">
     </el-pagination>
 
-    <el-dialog top="2vh"
+    <el-dialog top="0"
       :title="isEdit?'编辑':'新增'"
       :visible.sync="addEditDialogVisible"
       @close="closeDialog('addEditDialogVisible')"
@@ -167,6 +167,7 @@
           style="display:block;"
           label="配图：">
           <el-upload action="/admin/upload"
+            ref="upload"
             list-type="picture-card"
             :headers="headers"
             :file-list="extImageList"
@@ -244,7 +245,8 @@ export default {
       fieldList: [],
       //本来想放在 infoForm 里面的，但是显示不出来
       cover: "",
-      extCoverList: [],
+      linkImageList: [],
+      extImageList: [],
 
       infoForm: {
         title: '',
@@ -286,7 +288,13 @@ export default {
   methods: {
     closeDialog(flag) {
       this[flag] = false
-      this.infoForm = []
+      this.infoForm = {
+        title: '',
+        cover: "",
+        extCoverList: [],
+        content: ""
+      }
+      this.$refs['upload'].clearFiles()
       if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
     },
     handleSizeChange: function (val) {
@@ -311,12 +319,13 @@ export default {
       this.isEdit = false;
       this.cover = "";
       this.extCoverList = [];
-      this.infoForm = Object.assign({}, null);
+      this.linkImageList = []
       this.addEditDialogVisible = true;
     },
     handleEdit: function (index, row) {
       this.cover = "";
       this.extImageList = [];
+      this.linkImageList = []
       this.isEdit = true;
       this.reFindDetailByid(row.id)
       this.addEditDialogVisible = true;
@@ -329,6 +338,7 @@ export default {
         if (this.infoForm.imagesPath) {
           this.infoForm.imagesPath.split(',').forEach(imageUrl => {
             this.extImageList.push({ url: imageUrl })
+            this.linkImageList.push({ url: imageUrl })
           })
         }
       })
@@ -337,8 +347,18 @@ export default {
       this.previewImageUrl = file.url;
       this.isShowImgPreview = true;
     },
-    handleExtCoverSuccess: function (res, file) {
-      this.extImageList.push(res.file);
+    handleExtCoverSuccess(res) {
+      this.linkImageList.push(res.file);
+    },
+    handleExtCoverRemove(res) {
+      let removeImageIndex = 0
+      if (res.response) {
+        removeImageIndex = this.linkImageList.findIndex(file => file.name === res.response.file.name);
+        this.linkImageList.splice(removeImageIndex, 1)
+      } else {
+        removeImageIndex = this.linkImageList.findIndex(file => file.uid === res.uid);
+        this.linkImageList.splice(removeImageIndex, 1)
+      }
     },
     handleCoverRemove: function (file, fileList) {
       this.infoForm.cover = "";
@@ -378,7 +398,7 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
-            this.infoForm.imagesPath = this.extImageList.join(',')
+            this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
             let para = Object.assign({}, this.infoForm);
             save(para).then(res => {
               NProgress.done();
@@ -396,7 +416,7 @@ export default {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
-            this.infoForm.imagesPath = this.extImageList.join(',')
+            this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
             let para = Object.assign({}, this.infoForm);
             update(para).then(res => {
               NProgress.done();
@@ -426,7 +446,7 @@ export default {
     getList: function () {
       let params = {
         title: this.query.title,
-        author: this.query.author,
+        fieldId: this.query.createField,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
       };

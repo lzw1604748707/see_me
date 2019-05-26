@@ -17,8 +17,7 @@ public class _MappingKit {
 	
 	public static void mapping(ActiveRecordPlugin arp) {
 		arp.addMapping("feedback", "id", Feedback.class);
-		// Composite Primary Key order: id,isDelete
-		arp.addMapping("sm_photo_collection", "id,isDelete", SmPhotoCollection.class);
+		arp.addMapping("sm_photo_collection", "id", SmPhotoCollection.class);
 		arp.addMapping("sm_photo_collection_record", "id", SmPhotoCollectionRecord.class);
 		arp.addMapping("sm_photo_comment", "id", SmPhotoComment.class);
 		arp.addMapping("sm_photo_field", "id", SmPhotoField.class);

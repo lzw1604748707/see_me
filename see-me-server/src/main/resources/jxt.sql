@@ -2,7 +2,7 @@
 
 #namespace("sm_sys_user")
 	#sql("admin-paginate")
-		select id,name,avatar,account,sex,career,area,userType,mobile,freezeDate,freezeCause,status,createDate,lastLoginDate,ifnull(fa.followers ,0) as followers, ifnull(fu.followings ,0) as followings
+		select id,name,avatar,account,sex,career,area,userType,mobile,email,freezeDate,freezeCause,status,createDate,lastLoginDate,ifnull(fa.followers ,0) as followers, ifnull(fu.followings ,0) as followings
 		from sm_sys_user as u
 		left join (select  attentionId, count(userId) as followers from sm_sys_user_attention GROUP BY  attentionId) fa 
 		ON u.id=fa.attentionId 

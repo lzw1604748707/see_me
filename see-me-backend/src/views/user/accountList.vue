@@ -135,6 +135,10 @@
           <span>{{infoForm.mobile}}</span>
         </el-form-item>
         <el-form-item class="school-item"
+          label="电子邮箱：">
+          <span>{{infoForm.email}}</span>
+        </el-form-item>
+        <el-form-item class="school-item"
           label="关注者数量：">
           <span>{{infoForm.followers}}</span>
           <span style="margin-left:40px;">
@@ -363,6 +367,11 @@ export default {
       return function (index) {
         return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
       }
+    },
+    headers() {
+      return {
+        jxtAdminSessionId: this.$store.state.token
+      };
     }
   },
   created() { },

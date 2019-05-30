@@ -346,6 +346,7 @@ export default {
           this.$confirm("确认提交吗？", "提示", {}).then(() => {
             NProgress.start();
             this.addEditDialogVisible = false;
+            this.infoForm.createrId = -1
             this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
             let para = Object.assign({}, this.infoForm);
             save(para).then(res => {

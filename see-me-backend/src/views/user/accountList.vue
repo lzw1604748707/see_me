@@ -247,8 +247,9 @@
         <el-form-item prop="sex"
           label="性别：">
           <el-radio-group v-model="infoForm.sex">
-            <el-radio label="男"></el-radio>
-            <el-radio label="女"></el-radio>
+            <el-radio label="1"
+              :value="1">男</el-radio>
+            <el-radio label="0">女</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="area"
@@ -424,8 +425,6 @@ export default {
       this.getList();
     },
     formatDate(...dataList) {
-      console.log('时间比', dataList);
-
       return dataList[2] ? this.$moment(dataList[2]).format("YYYY-MM-DD HH:mm:ss") : '';
     },
     handleRead: function (index, row) {

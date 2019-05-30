@@ -7,7 +7,7 @@ import {Message} from 'element-ui'
 import qs from 'qs'
 
 axios.defaults.timeout = 10000 // 响应nrpm时间
-// axios.defaults.baseURL = '/api' // 配置接口地址
+axios.defaults.baseURL = '/api' // 配置接口地址
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 axios.defaults.withCredentials = true
 

@@ -17,6 +17,13 @@ public class PhotoProjectListController extends AdminController {
 		Kv kv = getParaToMap();
 		renderJson(RetKit.ok("page", photoProjectService.list(pageNumber, pageSize, kv)));
 	}
+	
+	public void recomList(){
+		int pageSize = getParaToInt("pageSize", 10);
+		int pageNumber = getParaToInt("pageNumber", 1);
+		Kv kv = getParaToMap();
+		renderJson(RetKit.ok("page", photoProjectService.recomList(pageNumber, pageSize, kv)));
+	}
 
 	public void findById() {
 		int id =getParaToInt("id");

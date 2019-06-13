@@ -26,7 +26,6 @@ public class UserLoginService {
 		}
 		account = account.trim();
 		password = password.trim();
-		
 		SmSysUser user = userDao.findFirst("select * from sm_sys_user where account = ? limit 1", account);
 		if (user == null) {
 			return RetKit.fail("账户不存在");
@@ -64,7 +63,6 @@ public class UserLoginService {
 			return RetKit.fail("密码错误");
 		}
 	}
-
 	
 	public void logout(String sessionId){
 		if (StrKit.notBlank(sessionId)) {

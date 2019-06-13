@@ -19,7 +19,7 @@ public class MobileRoutes extends Routes {
 	@Override
 	public void config() {
 		//登陆拦截器
-		this.addInterceptor(new UserLoginInterceptor());
+//		this.addInterceptor(new UserLoginInterceptor());
 		//用户模块
 		this.add("/mobile", IndexController.class);
 		this.add("/mobile/user", UserListController .class);

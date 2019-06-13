@@ -7,9 +7,10 @@ export function platformCount() {
     })
 }
 
-export function historyOnline() {
+export function historyOnline(params) {
     return fetch({
         url: '/admin/dashBoard/historyOnline',
-        method: 'get'
+        method: 'post',
+        data: params
     })
 }

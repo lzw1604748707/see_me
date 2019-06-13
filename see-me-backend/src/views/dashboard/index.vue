@@ -23,25 +23,11 @@
           <div slot="header"
             class="clearfix">
             <span>
-              <h1>系统运行情况</h1>
+              <h1>近7天在线人数</h1>
             </span>
           </div>
-          <el-tabs v-model="activeName"
-            tabPosition="right"
-            class="ehcarts-tabs">
-            <el-tab-pane label="CPU使用情況"
-              name="first">
-              <ve-pie v-if="activeName ==='first'"
-                :data="chartData"
-                :settings="chartSettings"></ve-pie>
-            </el-tab-pane>
-            <el-tab-pane label="内存使用情況"
-              name="second">
-              <ve-pie v-if="activeName ==='second'"
-                :data="chartData"
-                :settings="chartSettings"></ve-pie>
-            </el-tab-pane>
-          </el-tabs>
+          <ve-pie :data="chartData"
+            :settings="chartSettings"></ve-pie>
         </el-card>
       </el-col>
     </el-row>
@@ -57,7 +43,9 @@ export default {
   },
   data() {
     return {
-      chartSettings: {},
+      chartSettings: {
+      },
+      dayNumber: 7,
       platform: {
         userCount: 0,
         projectCount: 0,
@@ -67,24 +55,24 @@ export default {
       },
       activeName: "",
       chartData: {
-        columns: ["name", "present"],
-        rows: [{ name: "空闲率", present: 90 }, { name: "使用率", present: 10 }]
+        columns: ["date", "在线人数"],
+        rows: []
       }
     };
   },
   methods: {
     reFindPlatForm() {
-      console.log('哈哈哈');
-
       platformCount().then(res => {
-        console.log(res);
         this.platform = res.data
       })
     },
     reFindHistoryOnline() {
-      // 未实现
-      historyOnline().then(res => {
-        console.log(res);
+      const params = { dayNumber: this.dayNumber }
+      historyOnline(params).then(res => {
+        this.chartData.rows = res.data.map(item => ({
+          date: item.date,
+          在线人数: item.personNumber
+        }))
       })
     }
   },
@@ -92,6 +80,7 @@ export default {
     //放到这里是因为渲染问题，如果直接在data默认，css有问题
     this.activeName = "first";
     this.reFindPlatForm()
+    this.reFindHistoryOnline()
   }
 };
 </script>

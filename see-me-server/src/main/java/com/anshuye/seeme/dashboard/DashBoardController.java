@@ -13,7 +13,8 @@ public class DashBoardController extends AdminController {
 	}
 	
 	public void historyOnline() {
-		renderJson(RetKit.ok(srv.historyOnline()));
+		int dayNumber =getParaToInt("dayNumber");
+		renderJson(srv.historyOnline(dayNumber));
 	}
 	
 }

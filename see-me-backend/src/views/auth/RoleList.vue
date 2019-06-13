@@ -27,7 +27,8 @@
       <el-table-column prop="createAt"
         label="添加时间"> </el-table-column>
       <el-table-column label="操作">
-        <template slot-scope="scope">
+        <template slot-scope="scope"
+          v-if="scope.row.id!==0">
           <el-button size="mini"
             type="primary"
             plain

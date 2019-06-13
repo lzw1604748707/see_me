@@ -42,8 +42,9 @@ public class MainConfig extends JFinalConfig {
 
 	@Override
 	public void configRoute(Routes me) {
-		me.add(new AdminRoutes());
 		me.add(new MobileRoutes());
+		me.add(new AdminRoutes());
+
 	}
 
 	@Override

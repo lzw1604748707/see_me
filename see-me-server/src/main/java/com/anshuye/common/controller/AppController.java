@@ -11,7 +11,7 @@ import com.jfinal.plugin.ehcache.CacheKit;
 public class AppController extends Controller {
 	
 	@Clear
-	public void index(){
+	public void mobile(){
 		render("/mobile_index.html");
 	}
 	

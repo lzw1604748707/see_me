@@ -19,6 +19,10 @@ public class PhotoProjectListService {
 		Page<SmPhotoProject> page = dao.paginate(pageNumber, pageSize, dao.getSqlPara("sm_photo_project.admin-paginate", kv));
 		return page;
 	}
+	public Page<SmPhotoProject> recomList(int pageNumber, int pageSize, Kv kv) {
+		Page<SmPhotoProject> page = dao.paginate(pageNumber, pageSize, dao.getSqlPara("sm_photo_project.mobile-paginate", kv));
+		return page;
+	}
 	public List<SmPhotoField> findCreateFileldList() {
 		List<SmPhotoField> fieldList = fieldDao.find("select * from sm_photo_field where status =1");
 		return fieldList;

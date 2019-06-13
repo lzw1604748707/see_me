@@ -44,6 +44,7 @@
             plain
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini"
+            v-if="scope.row.roleId!==0"
             type="danger"
             plain
             @click="handleRemove(scope.$index, scope.row)">删除</el-button>
@@ -63,7 +64,7 @@
     <el-dialog title="新增/编辑"
       :visible.sync="addEditDialogVisible"
       @close="closeDialog('addEditDialogVisible')"
-      width="800px">
+      width="500px">
       <!-- 学校详情 -->
       <el-form ref="infoForm"
         :model="infoForm"
@@ -71,19 +72,23 @@
         label-width="120px">
         <el-form-item prop="name"
           label="管理员名称：">
-          <el-input v-model="infoForm.name"></el-input>
+          <el-input v-model="infoForm.name"
+            style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item prop="username"
           label="登陆账号：">
-          <el-input v-model="infoForm.username"></el-input>
+          <el-input v-model="infoForm.username"
+            style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item prop="roleId"
+          v-if="infoForm.roleId!==0"
           label="权限组：">
           <el-select v-model="infoForm.roleId"
             :disabled="infoForm.roleId===0"
             :title="infoForm.roleId===0?'不能修改超级管理员的权限':''"
-            placeholder="请选择权限组">
-            <el-option v-for="role in roleList"
+            placeholder="请选择权限组"
+            style="width:300px;">
+            <el-option v-for="role in selectRoleList"
               :key="role.id"
               :label="role.name"
               :value="role.id"></el-option>
@@ -148,6 +153,9 @@ export default {
       return function (index) {
         return (_this.page.pageNumber - 1) * _this.page.pageSize + index + 1
       }
+    },
+    selectRoleList() {
+      return this.roleList.filter(item => item.id !== 0)
     }
   },
   mounted() {

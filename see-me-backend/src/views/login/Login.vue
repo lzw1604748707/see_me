@@ -30,7 +30,8 @@
               v-model="loginForm.password"
               auto-complete="off"
               :placeholder="`${passwordVerify ? '请输入密码' : '密码'}`"
-              @blur="verify(loginForm.password, 'passwordVerify')"></el-input>
+              @blur="verify(loginForm.password, 'passwordVerify')"
+              @keyup.native.enter="handleLogin"></el-input>
           </div>
           <!-- <el-input type="password"
           v-model="loginForm.password"

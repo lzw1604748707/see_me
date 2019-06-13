@@ -28,7 +28,7 @@ public class AdminAuthInterceptor implements Interceptor {
 	}
 	
 	private boolean validateAuth(SysAccount account,String controllerKey){
-		if (account.isSysAdmin()) {
+		if (account.isSysAdmin()||controllerKey=="/admin/dashBoard") {
 			return true;
 		}
 		List<SysMenu> list = RoleService.me.findMenuListByRoleId(account.getRoleId());

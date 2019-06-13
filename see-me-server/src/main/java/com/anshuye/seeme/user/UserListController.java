@@ -1,5 +1,6 @@
 package com.anshuye.seeme.user;
 
+import com.alibaba.fastjson.JSONObject;
 import com.anshuye.common.controller.AdminController;
 import com.anshuye.common.kit.RetKit;
 import com.anshuye.common.model.SmPhotoCollection;
@@ -44,6 +45,13 @@ public class UserListController extends AdminController {
 	public void save(){
 		SmSysUser user = getBean(SmSysUser.class,"");
 		renderJson(userService.save(user));
+	}
+	
+	public void isExistAccount() {
+		String account =getPara("account");
+		JSONObject isExistAccountJson = new JSONObject();
+		isExistAccountJson.put("isExistAccount",userService.isExistAccount(account));
+		renderJson(isExistAccountJson);
 	}
 	public void changeFreeze(){
 		Integer id = getParaToInt("id");

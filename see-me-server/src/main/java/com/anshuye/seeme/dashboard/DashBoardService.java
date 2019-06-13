@@ -1,9 +1,11 @@
 package com.anshuye.seeme.dashboard;
 
 import java.util.Date;
+import java.util.List;
 
 import com.anshuye.common.kit.RetKit;
 import com.anshuye.common.model.Feedback;
+import com.anshuye.common.model.SmPhotoCollection;
 import com.anshuye.common.model.SysAdv;
 import com.jfinal.kit.Kv;
 import com.jfinal.plugin.activerecord.Db;
@@ -19,9 +21,9 @@ public class DashBoardService {
 		return platFormcountRecord;
 	}
 	
-	public Record historyOnline() {
-		Record platFormcountRecord=Db.findFirst("platform.admin-paginate");
-		return platFormcountRecord;
+	public List<Record> historyOnline(int dayNumber) {		
+		List<Record> onlineList = Db.find("SELECT date(loginAt) as date, COUNT(*) as  personNumber FROM sys_login_log where DATE_SUB(CURDATE(), INTERVAL ? DAY) <= date(NOW()) and userId!='' GROUP BY date ORDER BY date",dayNumber);
+		return onlineList;
 	}
 	
 }

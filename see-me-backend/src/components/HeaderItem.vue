@@ -46,19 +46,13 @@
             v-model="infoForm.checkPass"
             auto-complete="off"></el-input>
         </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary"
-            @click="submitForm('infoForm')">提交</el-button>
-          <el-button @click="resetForm('infoForm')">重置</el-button>
-        </el-form-item>
       </el-form>
 
       <span slot="footer"
         class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary"
-          @click="dialogVisible = false">确定</el-button>
+          @click="submitForm('infoForm')">更新</el-button>
       </span>
     </el-dialog>
   </div>
@@ -117,7 +111,6 @@ export default {
         if (valid) {
           let params = Object.assign({}, this.infoForm);
           console.log(params);
-
           resetPassword(params)
             .then(res => {
               logout();

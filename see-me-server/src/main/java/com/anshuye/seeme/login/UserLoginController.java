@@ -15,12 +15,11 @@ public class UserLoginController extends BaseController{
 	static final UserLoginService srv = UserLoginService.me;
 
 	public void doLogin(){
-		String username = getPara("username");
+		String account = getPara("account");
 		String password = getPara("password");
 		String loginIp = getIpAddress();
-		renderJson(srv.doLogin(username, password, loginIp));
+		renderJson(srv.doLogin(account, password, loginIp));
 	}
-	
 	public void logout(){
 		String sessionId  = getHeader(Constant.USER_SESSION_ID);
 		srv.logout(sessionId);

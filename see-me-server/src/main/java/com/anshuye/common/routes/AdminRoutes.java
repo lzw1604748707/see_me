@@ -27,7 +27,7 @@ public class AdminRoutes extends Routes {
 		//权限验证拦截器
 		this.addInterceptor(new AdminAuthInterceptor());
 		//用户模块
-		this.add("/admin", IndexController.class);
+		this.add("/", IndexController.class);
 		this.add("/admin/user/user", UserListController .class);
 		this.add("/admin/user/project", PhotoProjectListController .class);
 		this.add("/admin/user/collection", PhotoCollectionListController.class);

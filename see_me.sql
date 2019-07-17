@@ -1,17 +1,4 @@
-/*
-Navicat MySQL Data Transfer
-
-Source Server         : see-me
-Source Server Version : 80016
-Source Host           : localhost:3306
-Source Database       : see_me
-
-Target Server Type    : MYSQL
-Target Server Version : 80016
-File Encoding         : 65001
-
-Date: 2019-06-18 22:07:43
-*/
+﻿
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -23,14 +10,14 @@ CREATE TABLE `feedback` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '反馈信息Id',
   `accountType` tinyint(4) NOT NULL DEFAULT '1' COMMENT '反馈账号类型 0-游客 1-用户 2-合作商',
   `accountId` int(11) NOT NULL COMMENT '反馈人Id',
-  `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '建议内容',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '建议内容',
   `type` tinyint(2) NOT NULL COMMENT '反馈建议 0-优化 1-平台问题反馈 2-合作 3-其他',
   `createDate` datetime NOT NULL COMMENT '创建时间',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '建议状态 0 待确认 1 确认 2 已处理 3 回绝  4 删除',
   PRIMARY KEY (`id`),
   KEY `fk_feedback_accountId` (`accountId`),
   CONSTRAINT `fk_feedback_accountId` FOREIGN KEY (`accountId`) REFERENCES `sm_sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of feedback
@@ -88,7 +75,7 @@ CREATE TABLE `sm_photo_collection_record` (
   KEY `fk_col_record_projectid` (`projectId`),
   CONSTRAINT `fk_col_record_collectionid` FOREIGN KEY (`collectionId`) REFERENCES `sm_photo_collection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_col_record_projectid` FOREIGN KEY (`projectId`) REFERENCES `sm_photo_project` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ;
 
 -- ----------------------------
 -- Records of sm_photo_collection_record
@@ -149,12 +136,12 @@ INSERT INTO `sm_photo_comment` VALUES ('7', '7', '-1', '这个作品很棒', '20
 DROP TABLE IF EXISTS `sm_photo_field`;
 CREATE TABLE `sm_photo_field` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '设计领域id',
-  `fieldName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '设计领域名称',
+  `fieldName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  NOT NULL COMMENT '设计领域名称',
   `createDate` datetime NOT NULL COMMENT '建立时间',
   `providerId` int(10) NOT NULL COMMENT '提供者Id',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '状态( 0 审核中 1 通过  2 未通过)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ;
 
 -- ----------------------------
 -- Records of sm_photo_field
@@ -197,7 +184,7 @@ CREATE TABLE `sm_photo_praise` (
   KEY `fk_praise_giverId` (`giverId`),
   KEY `fk_praise_projectId` (`projectId`),
   CONSTRAINT `fk_praise_projectId` FOREIGN KEY (`projectId`) REFERENCES `sm_photo_project` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ;
 
 -- ----------------------------
 -- Records of sm_photo_praise
@@ -266,7 +253,7 @@ CREATE TABLE `sm_sys_meassage` (
   KEY `fk_massage_recipientid` (`recipientid`),
   CONSTRAINT `fk_massage_recipientid` FOREIGN KEY (`recipientid`) REFERENCES `sm_sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_massage_senderid` FOREIGN KEY (`senderId`) REFERENCES `sm_sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ;
 
 -- ----------------------------
 -- Records of sm_sys_meassage
@@ -302,7 +289,7 @@ CREATE TABLE `sm_sys_user` (
   `website` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '个人网站',
   `career` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '职业',
   `lastLoginDate` datetime DEFAULT NULL COMMENT '上次登录时间',
-  `salt` varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '盐',
+  `salt` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '盐',
   `updateDate` datetime NOT NULL COMMENT '上次更新时间',
   `isDelete` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否删除 （0 存在 1 删除）',
   PRIMARY KEY (`id`) USING BTREE,
@@ -383,7 +370,7 @@ CREATE TABLE `sys_account` (
   PRIMARY KEY (`id`),
   KEY `fk_account_roleId` (`roleId`),
   CONSTRAINT `fk_account_roleId` FOREIGN KEY (`roleId`) REFERENCES `sys_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='管理员';
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COMMENT='管理员';
 
 -- ----------------------------
 -- Records of sys_account
@@ -403,9 +390,9 @@ INSERT INTO `sys_account` VALUES ('10', 'liu', '13', 'aaa123', '780680d41858c3fa
 DROP TABLE IF EXISTS `sys_adv`;
 CREATE TABLE `sys_adv` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '广告id',
-  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '广告标题',
-  `url` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '广告外链',
-  `cover` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '广告封面',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '广告标题',
+  `url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '广告外链',
+  `cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '广告封面',
   `adminId` int(100) NOT NULL COMMENT '管理员Id',
   `clickCount` int(10) NOT NULL DEFAULT '0' COMMENT '点击量',
   `status` int(1) NOT NULL DEFAULT '1' COMMENT '状态 0 草稿 1展示  2已到期',
@@ -419,7 +406,7 @@ CREATE TABLE `sys_adv` (
   KEY `fk_adv_fieldId` (`fieldId`),
   CONSTRAINT `fk_adv_adminid` FOREIGN KEY (`adminId`) REFERENCES `sys_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_adv_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `sm_photo_field` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_adv
@@ -437,23 +424,23 @@ INSERT INTO `sys_adv` VALUES ('20', '百度', 'www.baidu.com', '/upload/temp/suo
 DROP TABLE IF EXISTS `sys_info`;
 CREATE TABLE `sys_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '资讯Id',
-  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '资讯标题',
-  `cover` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '资讯封面',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资讯标题',
+  `cover` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '资讯封面',
   `adminId` int(11) NOT NULL COMMENT '管理员Id',
-  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT '正文',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '正文',
   `readCount` int(11) NOT NULL DEFAULT '0' COMMENT '阅读量',
   `status` int(1) NOT NULL DEFAULT '1' COMMENT '状态  0 草稿 1 进行中 2 过期',
   `createDate` datetime NOT NULL COMMENT '创建时间',
   `updateDate` datetime NOT NULL COMMENT '更新时间',
   `isDelete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除 0 存在 1 删除',
   `fieldId` int(100) NOT NULL COMMENT '展示领域Id',
-  `imagesPath` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内容图片地址',
+  `imagesPath` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内容图片地址',
   PRIMARY KEY (`id`),
   KEY `fk_info_adminid` (`adminId`),
   KEY `fk_info_fieldId` (`fieldId`),
   CONSTRAINT `fk_info_adminid` FOREIGN KEY (`adminId`) REFERENCES `sys_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_info_fieldId` FOREIGN KEY (`fieldId`) REFERENCES `sm_photo_field` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_info
@@ -476,7 +463,7 @@ CREATE TABLE `sys_login_log` (
   `userId` int(11) DEFAULT NULL,
   KEY `accountId_index` (`accountId`) USING BTREE,
   CONSTRAINT `fk_loginLog_accountId` FOREIGN KEY (`accountId`) REFERENCES `sys_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_login_log
@@ -540,7 +527,7 @@ CREATE TABLE `sys_menu` (
   `status` tinyint(2) unsigned DEFAULT '1' COMMENT '状态 1 -正常 0-禁用',
   `createAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -570,7 +557,7 @@ CREATE TABLE `sys_role` (
   `createAt` datetime NOT NULL,
   `updateAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_role
@@ -599,7 +586,7 @@ CREATE TABLE `sys_role_menu` (
   KEY `fk_sys_role_menu_sys_menu_1` (`menuId`) USING BTREE,
   CONSTRAINT `fk__role_menu_roleid` FOREIGN KEY (`roleId`) REFERENCES `sys_role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_role_menu_menuid` FOREIGN KEY (`menuId`) REFERENCES `sys_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -689,7 +676,7 @@ CREATE TABLE `sys_session` (
   `userId` int(11) DEFAULT '-2',
   PRIMARY KEY (`id`),
   KEY `fk_session_accountId` (`accountId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of sys_session

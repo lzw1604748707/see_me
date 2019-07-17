@@ -71,7 +71,7 @@ public class JsoupKit {
 
 	
 	public static void main(String[] args) {
-		String sb ="<h1>不改</h1><img src=\"http://127.0.0.1:80/upload/temp/true1.jpg\">";
+		String sb ="<h1>不改</h1><img src=\"http://127.0.0.1:8080/upload/temp/true1.jpg\">";
 		System.out.println(fiterContent(sb,"/info/2"));
 	}
 }

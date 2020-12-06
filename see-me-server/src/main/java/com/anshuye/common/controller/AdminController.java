@@ -11,7 +11,7 @@ public class AdminController extends BaseController {
 	
 	@Clear
 	public void index(){
-		render("/admin_index.html");
+		render("/index.html");
 	}
 	
 	@Before(NotAction.class)

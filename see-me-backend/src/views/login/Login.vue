@@ -92,7 +92,7 @@ export default {
                 this.$store.dispatch('generateRoutes', {menus}).then(() => {
                   // 生成可访问的路由表
                   this.$router.addRoutes(this.$store.state.addRouters) // 动态添加可访问路由表
-                  this.$router.push({path: '/admin'}) //登录成功之后重定向到首页
+                  this.$router.push({path: '/'}) //登录成功之后重定向到首页
                 })
               })
             })

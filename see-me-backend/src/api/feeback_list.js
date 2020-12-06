@@ -1,6 +1,6 @@
 import fetch from '@/axios'
 
-export function list(params) {
+export function list (params) {
     return fetch({
         url: '/admin/feeback/list',
         method: 'post',
@@ -8,7 +8,7 @@ export function list(params) {
     })
 }
 
-export function save(params) {
+export function save (params) {
     return fetch({
         url: '/admin/feeback/save',
         method: 'post',
@@ -16,14 +16,14 @@ export function save(params) {
     })
 }
 
-export function remove(id) {
+export function remove (id) {
     return fetch({
         url: '/admin/feeback/remove/' + id,
         method: 'get'
     })
 }
 
-export function reSaveStatus(params) {
+export function reSaveStatus (params) {
     return fetch({
         url: '/admin/feeback/changeStatus',
         data: params,

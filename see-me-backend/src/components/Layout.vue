@@ -42,6 +42,9 @@ export default {
   background: #fff;
   .main {
     height: auto;
+    .menu {
+      min-height: 100vh;
+    }
   }
 }
 </style>

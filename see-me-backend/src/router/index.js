@@ -10,29 +10,29 @@ Vue.use(Router)
 
 
 export const constantRouterMap = [{
-        path: '/admin',
-        component: Layout,
-        name: '首页',
-        icon: 'el-icon-menu',
-        redirect: '/admin/dashboard',
-        noDropdown: true,
-        children: [{
-            path: 'dashboard',
-            component: resolve => require(['../views/dashboard'], resolve),
-            name: '首页'
-        }]
-    }, {
-        path: '/admin/login',
-        name: '登陆',
-        hidden: true,
-        component: Login
-    },
-    { path: '/404', component: resolve => require(['../views/error/404.vue'], resolve), hidden: true },
-    { path: '/401', component: resolve => require(['../views/error/401.vue'], resolve), hidden: true }
+    path: '/',
+    component: Layout,
+    name: '首页',
+    icon: 'el-icon-menu',
+    redirect: '/dashboard',
+    noDropdown: true,
+    children: [{
+        path: 'dashboard',
+        component: resolve => require(['../views/dashboard'], resolve),
+        name: '首页'
+    }]
+}, {
+    path: '/login',
+    name: '登陆',
+    hidden: true,
+    component: Login
+},
+{ path: '/404', component: resolve => require(['../views/error/404.vue'], resolve), hidden: true },
+{ path: '/401', component: resolve => require(['../views/error/401.vue'], resolve), hidden: true }
 ]
 
 export const asyncRouterMap = [{
-    path: '/admin/user',
+    path: '/user',
     component: Layout,
     name: '用户管理',
     redirect: "noredirect",
@@ -65,24 +65,24 @@ export const asyncRouterMap = [{
         }
     ]
 }, {
-    path: '/admin/info',
+    path: '/info',
     component: Layout,
     name: '信息管理',
     redirect: "noredirect",
     icon: 'el-icon-picture',
     children: [{
-            path: 'information',
-            name: '资讯列表',
-            component: resolve => require(['../views/info/InfoList.vue'], resolve)
-        },
-        {
-            path: 'adv',
-            name: '广告列表',
-            component: resolve => require(['../views/info/AdvList.vue'], resolve)
-        }
+        path: 'information',
+        name: '资讯列表',
+        component: resolve => require(['../views/info/InfoList.vue'], resolve)
+    },
+    {
+        path: 'adv',
+        name: '广告列表',
+        component: resolve => require(['../views/info/AdvList.vue'], resolve)
+    }
     ]
 }, {
-    path: '/admin/feedback',
+    path: '/feedback',
     component: Layout,
     name: '意见反馈',
     redirect: "noredirect",
@@ -93,21 +93,21 @@ export const asyncRouterMap = [{
         component: resolve => require(['../views/feeback/FeebackList.vue'], resolve)
     }]
 }, {
-    path: '/admin/auth',
+    path: '/auth',
     component: Layout,
     name: '管理员管理',
     redirect: "noredirect",
     icon: 'el-icon-setting',
     children: [{
-            path: 'account',
-            name: '管理员列表',
-            component: resolve => require(['../views/auth/AccountList.vue'], resolve)
-        },
-        {
-            path: 'role',
-            name: '权限管理',
-            component: resolve => require(['../views/auth/RoleList.vue'], resolve)
-        }
+        path: 'account',
+        name: '管理员列表',
+        component: resolve => require(['../views/auth/AccountList.vue'], resolve)
+    },
+    {
+        path: 'role',
+        name: '权限管理',
+        component: resolve => require(['../views/auth/RoleList.vue'], resolve)
+    }
     ]
 }, {
     path: '*',
@@ -120,6 +120,6 @@ export default new Router({
     scrollBehavior: () => ({
         y: 0
     }),
-    mode: 'history',
+    mode: 'hash',
     routes: constantRouterMap
 })

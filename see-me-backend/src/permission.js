@@ -6,7 +6,7 @@ import { loginWithCookie } from '@/api/login' // 验权
 // import { Message } from 'element-ui'
 
 
-const whiteList = ['/admin/login'] // 不重定向白名单
+const whiteList = ['/login'] // 不重定向白名单
 
 router.beforeEach((to, from, next) => {
     NProgress.start() // 开启Progress
@@ -15,20 +15,20 @@ router.beforeEach((to, from, next) => {
             next()
         } else {
             loginWithCookie().then(res => {
-                    if (res.data.success) {
-                        store.commit("login", res.data.account);
-                        const menus = res.data.account.menus;
-                        store.dispatch('generateRoutes', { menus }).then(() => { // 生成可访问的路由表
-                            router.addRoutes(store.state.addRouters) // 动态添加可访问路由表
-                            next({...to, replace: true }) // hack方法 确保addRoutes已完成 ,replace: true so the navigation will not leave a history record
-                        })
-                    } else {
-                        next("/admin/login")
-                    }
-                })
+                if (res.data.success) {
+                    store.commit("login", res.data.account);
+                    const menus = res.data.account.menus;
+                    store.dispatch('generateRoutes', { menus }).then(() => { // 生成可访问的路由表
+                        router.addRoutes(store.state.addRouters) // 动态添加可访问路由表
+                        next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,replace: true so the navigation will not leave a history record
+                    })
+                } else {
+                    next("/login")
+                }
+            })
                 .catch(error => {
                     console.log(error)
-                    next("/admin/login")
+                    next("/login")
                 });
         }
     } else {

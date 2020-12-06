@@ -1,13 +1,13 @@
 import fetch from '@/axios'
 
-export function list(params) {
+export function list (params) {
     return fetch({
         url: '/admin/auth/role/list',
         method: 'post',
         data: params
     })
 }
-export function save(params) {
+export function save (params) {
     return fetch({
         url: '/admin/auth/role/save',
         method: 'post',
@@ -15,21 +15,21 @@ export function save(params) {
     })
 }
 
-export function update(params) {
+export function update (params) {
     return fetch({
         url: '/admin/auth/role/update',
         method: 'post',
         data: params
     })
 }
-export function remove(id) {
+export function remove (id) {
     return fetch({
         url: '/admin/auth/role/remove/' + id,
         method: 'get'
     })
 }
 
-export function getMenuList() {
+export function getMenuList () {
     return fetch({
         url: '/admin/auth/role/getMenuList',
         method: 'get'

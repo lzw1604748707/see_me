@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getToken } from '@/utils/token'
 // import Vue from 'vue'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 
 
 import qs from 'qs'
@@ -15,6 +15,7 @@ axios.defaults.withCredentials = true
 // request拦截器
 axios.interceptors.request.use(config => {
     // Do something before request is sent
+    console.log('设置token', getToken());
     if (getToken()) {
         // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
         config.headers['jxtAdminSessionId'] = getToken()
@@ -32,7 +33,7 @@ axios.interceptors.request.use(config => {
 
 axios.interceptors.response.use((res) => {
     console.log(res.data)
-        // 对响应数据做些事
+    // 对响应数据做些事
     if (res.data.code === '501') {
         // 业务失败
         Message.warning(res.data.msg);

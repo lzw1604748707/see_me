@@ -35,8 +35,7 @@ public class MainConfig extends JFinalConfig {
 		me.setMaxPostSize(1024 * 1024 * 20);
 		me.setLogFactory(new Log4jLogFactory());
 		me.setBaseUploadPath("upload/temp");
-		me.setError404View("/admin_index.html");
-		me.setError404View("/mobile_index.html");
+		me.setError404View("/index.html");
 		me.setJsonDatePattern("yyyy-MM-dd HH:mm:ss");
 	}
 

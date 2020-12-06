@@ -145,7 +145,7 @@
             label="封面：">
             <el-upload style="width:165px;height:165px;"
               class="img-uploader"
-              action="/admin/upload"
+              action="/upload"
               :headers="headers"
               :show-file-list="false"
               :on-success="handleCoverSuccess"
@@ -166,7 +166,7 @@
         <el-form-item prop="extCover"
           style="display:block;"
           label="配图：">
-          <el-upload action="/admin/upload"
+          <el-upload action="/upload"
             ref="upload"
             list-type="picture-card"
             :headers="headers"
@@ -212,8 +212,8 @@
 
 <script type="text/ecmascript-6">
 // Progress 进度条
-import NProgress from "nprogress";
-import { upload } from "@/axios/upload";
+import NProgress from 'nprogress'
+import {upload} from '@/axios/upload'
 import {
   list,
   findById,
@@ -221,13 +221,13 @@ import {
   save,
   update,
   findCreateFileldList
-} from "@/api/info_list";
+} from '@/api/info_list'
 
 export default {
   data() {
     return {
       query: {
-        title: "",
+        title: '',
         createField: ''
       },
 
@@ -235,7 +235,7 @@ export default {
       isEdit: false,
 
       isShowImgPreview: false,
-      previewImageUrl: "",
+      previewImageUrl: '',
 
       page: {
         pageNumber: 1,
@@ -244,27 +244,29 @@ export default {
       },
       fieldList: [],
       //本来想放在 infoForm 里面的，但是显示不出来
-      cover: "",
+      cover: '',
       linkImageList: [],
       extImageList: [],
 
       infoForm: {
         title: '',
-        cover: "",
+        cover: '',
         extCoverList: [],
-        content: ""
+        content: ''
       },
       rules: {
-        title: [{ required: true, message: "请输入资讯标题", trigger: "blur" }],
-        cover: [{ required: true, message: "请上传封面", trigger: "change" }],
-        createFieldId: [{ required: true, message: "请选择展示领域", trigger: "change" }],
+        title: [{required: true, message: '请输入资讯标题', trigger: 'blur'}],
+        cover: [{required: true, message: '请上传封面', trigger: 'change'}],
+        createFieldId: [
+          {required: true, message: '请选择展示领域', trigger: 'change'}
+        ],
         content: [
-          { required: true, message: "请输入正文", trigger: "blur" },
-          { min: 20, message: "长度不能少于20个字符", trigger: "blur" }
+          {required: true, message: '请输入正文', trigger: 'blur'},
+          {min: 20, message: '长度不能少于20个字符', trigger: 'blur'}
         ]
       },
       tableData: []
-    };
+    }
   },
   computed: {
     realIndex() {
@@ -282,7 +284,7 @@ export default {
     headers() {
       return {
         jxtAdminSessionId: this.$store.state.token
-      };
+      }
     }
   },
   methods: {
@@ -290,158 +292,169 @@ export default {
       this[flag] = false
       this.infoForm = {
         title: '',
-        cover: "",
+        cover: '',
         extCoverList: [],
-        content: ""
+        content: ''
       }
       this.$refs['upload'].clearFiles()
-      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
+      if (this.$refs['infoForm']) {
+        this.$refs['infoForm'].resetFields()
+      }
     },
     handleSizeChange: function (val) {
-      this.page.pageSize = val;
-      this.getList();
+      this.page.pageSize = val
+      this.getList()
     },
     handleCoverCardPreview(val) {
-      this.previewImageUrl = val;
-      this.isShowImgPreview = true;
+      this.previewImageUrl = val
+      this.isShowImgPreview = true
     },
     handleCurrentChange: function (val) {
-      this.pageNumber = val;
-      this.getList();
+      this.pageNumber = val
+      this.getList()
     },
     formatDate(...dataList) {
-      return this.$moment(dataList[2]).format("YYYY-MM-DD");
+      return this.$moment(dataList[2]).format('YYYY-MM-DD')
     },
     handleSearch() {
-      this.getList();
+      this.getList()
     },
     handleAdd: function () {
-      this.isEdit = false;
-      this.cover = "";
-      this.extCoverList = [];
+      this.isEdit = false
+      this.cover = ''
+      this.extCoverList = []
       this.linkImageList = []
-      this.addEditDialogVisible = true;
+      this.addEditDialogVisible = true
     },
     handleEdit: function (index, row) {
-      this.cover = "";
-      this.extImageList = [];
+      this.cover = ''
+      this.extImageList = []
       this.linkImageList = []
-      this.isEdit = true;
+      this.isEdit = true
       this.reFindDetailByid(row.id)
-      this.addEditDialogVisible = true;
+      this.addEditDialogVisible = true
     },
     reFindDetailByid(id) {
-      let params = { id: id }
+      let params = {id: id}
       findById(params).then(res => {
         this.infoForm = res.data
-        this.cover = this.infoForm.cover;
+        this.cover = this.infoForm.cover
         if (this.infoForm.imagesPath) {
           this.infoForm.imagesPath.split(',').forEach(imageUrl => {
-            this.extImageList.push({ url: imageUrl })
-            this.linkImageList.push({ url: imageUrl })
+            this.extImageList.push({url: imageUrl})
+            this.linkImageList.push({url: imageUrl})
           })
         }
       })
     },
     handlePictureCardPreview: function (file) {
-      this.previewImageUrl = file.url;
-      this.isShowImgPreview = true;
+      this.previewImageUrl = file.url
+      this.isShowImgPreview = true
     },
     handleExtCoverSuccess(res) {
-      this.linkImageList.push(res.file);
+      this.linkImageList.push(res.file)
     },
     handleExtCoverRemove(res) {
       let removeImageIndex = 0
       if (res.response) {
-        removeImageIndex = this.linkImageList.findIndex(file => file.name === res.response.file.name);
+        removeImageIndex = this.linkImageList.findIndex(
+          file => file.name === res.response.file.name
+        )
         this.linkImageList.splice(removeImageIndex, 1)
       } else {
-        removeImageIndex = this.linkImageList.findIndex(file => file.uid === res.uid);
+        removeImageIndex = this.linkImageList.findIndex(
+          file => file.uid === res.uid
+        )
         this.linkImageList.splice(removeImageIndex, 1)
       }
     },
     handleCoverRemove: function (file, fileList) {
-      this.infoForm.cover = "";
+      this.infoForm.cover = ''
     },
     handleCoverSuccess(res, file) {
-      this.cover = res.file.url;
-      this.infoForm.cover = res.file.url;
+      this.cover = res.file.url
+      this.infoForm.cover = res.file.url
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg" || "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg' || 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error("上传图片只能是 JPG或者 png 格式!");
+        this.$message.error('上传图片只能是 JPG或者 png 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传图片大小不能超过 2MB!");
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
       if (isJPG && isLt2M) {
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     handleImageAdded: function (file, Editor, cursorLocation) {
-      upload(file, "/admin/upload")
+      upload(file, '/upload')
         .then(result => {
-          var url = result.data.file.url; // Get url from response
-          if (url.indexOf("http") === -1) {
-            url = "http://127.0.0.1:80" + url;
+          var url = result.data.file.url // Get url from response
+          if (url.indexOf('http') === -1) {
+            url = 'http://127.0.0.1:80' + url
           }
-          Editor.insertEmbed(cursorLocation, "image", url);
+          Editor.insertEmbed(cursorLocation, 'image', url)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     handleSubmitSave: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            NProgress.start();
-            this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
-            let para = Object.assign({}, this.infoForm);
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            NProgress.start()
+            this.infoForm.imagesPath = this.linkImageList
+              .map(file => file.url)
+              .join(',')
+            let para = Object.assign({}, this.infoForm)
             save(para).then(res => {
-              NProgress.done();
-              this.$message.success(res.data.msg);
-              this.$refs["infoForm"].resetFields();
-              this.addEditDialogVisible = false;
-              this.getList();
-            });
-          });
+              NProgress.done()
+              this.$message.success(res.data.msg)
+              this.$refs['infoForm'].resetFields()
+              this.addEditDialogVisible = false
+              this.getList()
+            })
+          })
         }
-      });
+      })
     },
     handleSubmitUpdate: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            NProgress.start();
-            this.infoForm.imagesPath = this.linkImageList.map(file => file.url).join(',')
-            let para = Object.assign({}, this.infoForm);
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            NProgress.start()
+            this.infoForm.imagesPath = this.linkImageList
+              .map(file => file.url)
+              .join(',')
+            let para = Object.assign({}, this.infoForm)
             update(para).then(res => {
-              NProgress.done();
-              this.$message.success(res.data.msg);
-              this.$refs["infoForm"].resetFields();
-              this.addEditDialogVisible = false;
-              this.getList();
-            });
-          });
+              NProgress.done()
+              this.$message.success(res.data.msg)
+              this.$refs['infoForm'].resetFields()
+              this.addEditDialogVisible = false
+              this.getList()
+            })
+          })
         }
-      });
+      })
     },
     handleRemove: function (index, row) {
-      this.$confirm("确定删除吗？")
+      this.$confirm('确定删除吗？')
         .then(_ => {
-          let id = row.id;
-          remove(id).then(res => {
-            this.$message.success(res.data.msg);
-            this.getList();
-          })
+          let id = row.id
+          remove(id)
+            .then(res => {
+              this.$message.success(res.data.msg)
+              this.getList()
+            })
             .catch(error => {
-              this.$message.error(error);
-            });
+              this.$message.error(error)
+            })
         })
-        .catch(_ => { });
+        .catch(_ => {})
     },
     getList: function () {
       let params = {
@@ -449,28 +462,29 @@ export default {
         fieldId: this.query.createField,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
-      };
-      list(params).then(res => {
-        this.tableData = res.data.page.list;
-        this.page.total = res.data.page.totalRow;
-      })
+      }
+      list(params)
+        .then(res => {
+          this.tableData = res.data.page.list
+          this.page.total = res.data.page.totalRow
+        })
         .catch(error => {
-          this.$message.error(error);
-          console.log(error);
-        });
+          this.$message.error(error)
+          console.log(error)
+        })
     },
     reFindCreateFieldList() {
       findCreateFileldList().then(res => {
         this.fieldList = res.data
-        console.log('参数', this.fieldList);
+        console.log('参数', this.fieldList)
       })
     }
   },
   mounted() {
-    this.getList();
+    this.getList()
     this.reFindCreateFieldList()
   }
-};
+}
 </script>
 
 <style>

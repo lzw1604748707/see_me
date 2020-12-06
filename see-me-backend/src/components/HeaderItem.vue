@@ -59,87 +59,87 @@
 </template>
 
 <script type="text/ecmascript-6">
-import { logout } from "@/api/login";
-import { removeToken } from "@/utils/token";
-import { resetPassword } from "@/api/my";
+import {logout} from '@/api/login'
+import {removeToken} from '@/utils/token'
+import {resetPassword} from '@/api/my'
 export default {
   data() {
     var validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
-        if (this.infoForm.checkPass !== "") {
-          this.$refs.infoForm.validateField("checkPass");
+        if (this.infoForm.checkPass !== '') {
+          this.$refs.infoForm.validateField('checkPass')
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请在此输入密码"));
+      if (value === '') {
+        callback(new Error('请在此输入密码'))
       } else if (value !== this.infoForm.password) {
-        callback(new Error("兩次输入密码不一致!"));
+        callback(new Error('兩次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
-      primaryColor: "#5589B1",
+      primaryColor: '#5589B1',
       dialogVisible: false,
       infoForm: {
-        password: "",
-        oldPassword: "",
-        checkPass: ""
+        password: '',
+        oldPassword: '',
+        checkPass: ''
       },
       rules2: {
-        oldPassword: [{ validator: validatePass, trigger: "blur" }],
+        oldPassword: [{validator: validatePass, trigger: 'blur'}],
         password: [
-          { min: 6, max: 18, message: "长度在 5 到 18 个字符", trigger: "blur" },
-          { validator: validatePass, trigger: "blur" }
+          {min: 6, max: 18, message: '长度在 5 到 18 个字符', trigger: 'blur'},
+          {validator: validatePass, trigger: 'blur'}
         ],
         checkPass: [
-          { min: 6, max: 18, message: "长度在 5 到 18 个字符", trigger: "blur" },
-          { validator: validatePass2, trigger: "blur" }
+          {min: 6, max: 18, message: '长度在 5 到 18 个字符', trigger: 'blur'},
+          {validator: validatePass2, trigger: 'blur'}
         ]
       }
-    };
+    }
   },
   methods: {
     submitForm: function (formName) {
-      var _this = this;
+      var _this = this
       this.$refs[formName].validate(valid => {
         if (valid) {
-          let params = Object.assign({}, this.infoForm);
-          console.log(params);
+          let params = Object.assign({}, this.infoForm)
+          console.log(params)
           resetPassword(params)
             .then(res => {
-              logout();
-              this.$message.success(res.data.msg);
-              _this.$router.push({ path: "/admin/login" });
+              logout()
+              this.$message.success(res.data.msg)
+              _this.$router.push({path: '/login'})
             })
             .catch(error => {
-              this.$message.error(error);
-              console.log(error);
-            });
+              this.$message.error(error)
+              console.log(error)
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     resetForm: function (formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     hanleLogOut: function () {
-      removeToken();
-      var _this = this;
-      this.$confirm("确认退出吗", "提示", {}).then(() => {
-        this.$store.commit("logout");
-        logout();
-        _this.$router.push({ path: "/admin/login" });
-      });
+      removeToken()
+      var _this = this
+      this.$confirm('确认退出吗', '提示', {}).then(() => {
+        this.$store.commit('logout')
+        logout()
+        _this.$router.push({path: '/login'})
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

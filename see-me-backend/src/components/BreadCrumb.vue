@@ -14,31 +14,31 @@
 <script>
 export default {
   created() {
-    this.getBreadcrumb();
+    this.getBreadcrumb()
   },
   data() {
     return {
       levelList: null
-    };
+    }
   },
   methods: {
     getBreadcrumb() {
-      let matched = this.$route.matched.filter(item => item.name);
-      const first = matched[0];
-      if (first && first.name === "首页") {
-        this.levelList = [{ name: "首页", path: "/admin" }];
-      } else if (first && (first.name !== "首页" || first.path !== "")) {
-        matched = [{ name: "首页", path: "/admin" }].concat(matched);
-        this.levelList = matched;
+      let matched = this.$route.matched.filter(item => item.name)
+      const first = matched[0]
+      if (first && first.name === '首页') {
+        this.levelList = [{name: '首页', path: '/admin'}]
+      } else if (first && (first.name !== '首页' || first.path !== '')) {
+        matched = [{name: '首页', path: '/admin'}].concat(matched)
+        this.levelList = matched
       }
     }
   },
   watch: {
     $route() {
-      this.getBreadcrumb();
+      this.getBreadcrumb()
     }
   }
-};
+}
 </script>
 
 <style>

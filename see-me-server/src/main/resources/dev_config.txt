@@ -1,9 +1,9 @@
 #数据库配置
 dbType=mysql
-jdbcUrl = jdbc:mysql://localhost/see_me?useSSL=FALSE&serverTimezone=UTC
-#user = root
-#password =123456
-user = seeAdmin
-password =0n8VTfawNYCLIsYn
+jdbcUrl = jdbc:mysql://47.96.86.239/see_me?useSSL=FALSE&serverTimezone=UTC&characterEncoding=utf8
+user = root
+password =Xdjcsfzd123
+#user = seeAdmin
+#password =0n8VTfawNYCLIsYn
 #开发模式
 devMode =false

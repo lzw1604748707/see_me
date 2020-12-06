@@ -1,14 +1,17 @@
 <template>
   <div>
+
     <!-- 搜索 -->
     <el-form inline
       :model="query"
       label-position="right"
       label-width="70px"
-      class="query-form">
+      class="query-form"
+      @submit.native.prevent>
       <el-input v-model="query.name"
         placeholder="请输入用户名称"
         style="width:150px"></el-input>
+
       <el-form-item>
         <el-button type="primary"
           @click="handleSearch">搜索</el-button>
@@ -33,7 +36,7 @@
         width="70">
         <template slot-scope="scope">
           <img class="table__avatar"
-            :src="scope.row.avatar||'/static/img/userLogo.jpg'"
+            :src="scope.row.avatar||'/static/userLogo.jpg'"
             @click="handleCoverCardPreview(scope.row.avatar)">
         </template>
       </el-table-column>
@@ -69,10 +72,7 @@
             type="info"
             plain
             @click="handleRead(scope.$index, scope.row)">查看</el-button>
-          <el-button size="mini"
-            type="warning"
-            plain
-            @click="ChangeStatus(scope.row)">{{scope.row.status===2?'解冻':'冻结'}}</el-button>
+
           <el-button size="mini"
             type="primary"
             plain
@@ -164,16 +164,7 @@
           label="状态：">
           <span>{{getStatusName(infoForm.status)}}</span>
         </el-form-item>
-        <el-form-item v-if="infoForm.status!==0"
-          class="school-item"
-          label="冻结时间：">
-          <span>{{infoForm.freezeDate}}</span>
-        </el-form-item>
-        <el-form-item v-if="infoForm.status!==0"
-          class="school-item"
-          label="冻结原因：">
-          <span>{{infoForm.freezeCause}}</span>
-        </el-form-item>
+
         <el-form-item class="school-item"
           label="入驻时间：">
           <span>{{infoForm.createDate}}</span>
@@ -211,7 +202,7 @@
           prop="avatar"
           label="头像：">
           <el-upload class="img-uploader"
-            action="/admin/upload"
+            action="/upload"
             :headers="headers"
             :show-file-list="false"
             :on-success="handleCoverSuccess"
@@ -312,29 +303,29 @@
 </template>
 
 <script type="text/ecmascript-6">
-import NProgress from "nprogress"; // Progress 进度条
+import NProgress from 'nprogress' // Progress 进度条
 import {
   list,
   remove,
   save,
   update,
-  changeFreeze,
   changeStop,
   followersList,
   followingsList
-} from "@/api/user_list";
+} from '@/api/user_list'
 
 export default {
   data() {
     return {
+      name: '',
       query: {
-        name: ""
+        name: ''
       },
       infoDialogVisible: false,
       addDialogVisible: false,
       editDialogVisible: false,
       isShowImgPreview: false,
-      previewImageUrl: "",
+      previewImageUrl: '',
       isEdit: false,
       page: {
         pageNumber: 1,
@@ -344,17 +335,17 @@ export default {
       avatar: '',
       infoForm: {},
       rules: {
-        name: [{ required: true, message: "请输入用户昵称", trigger: "blur" }],
-        area: [{ required: true, message: "请输入所在地", trigger: "blur" }],
-        email: [{ required: true, message: "请输入电子邮箱", trigger: "blur" }],
+        name: [{required: true, message: '请输入用户昵称', trigger: 'blur'}],
+        area: [{required: true, message: '请输入所在地', trigger: 'blur'}],
+        email: [{required: true, message: '请输入电子邮箱', trigger: 'blur'}],
         moblie: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-          { min: 6, max: 11, message: "长度在 6 到 11 个字符", trigger: "blur" }
+          {required: true, message: '请输入手机号', trigger: 'blur'},
+          {min: 6, max: 11, message: '长度在 6 到 11 个字符', trigger: 'blur'}
         ],
-        account: [{ required: true, message: "请输入登陆账户", trigger: "blur" }]
+        account: [{required: true, message: '请输入登陆账户', trigger: 'blur'}]
       },
       tableData: []
-    };
+    }
   },
   computed: {
     userTypeName() {
@@ -371,65 +362,68 @@ export default {
     },
     headers() {
       return {
-        jxtAdminSessionId: this.$store.state.token
-      };
+        SM_USER_ID: this.$store.state.token
+      }
     }
   },
-  created() { },
+  created() {},
   mounted() {
-    this.getList();
+    this.getList()
   },
   methods: {
     closeDialog(flag) {
       this[flag] = false
       this.infoForm = []
       this.avatar = ''
-      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
+      if (this.$refs['infoForm']) {
+        this.$refs['infoForm'].resetFields()
+      }
     },
     handleCoverCardPreview(url) {
-      this.previewImageUrl = url;
-      this.isShowImgPreview = true;
+      this.previewImageUrl = url
+      this.isShowImgPreview = true
     },
     getStatusName(status) {
       const statusNameList = ['正常', '停用', '冻结']
       return statusNameList[status]
     },
     handleCoverSuccess(res, file) {
-      this.avatar = res.file.url;
-      this.infoForm.avatar = res.file.url;
+      this.avatar = res.file.url
+      this.infoForm.avatar = res.file.url
     },
     handleCoverRemove(file, fileList) {
-      this.infoForm.avatar = "";
+      this.infoForm.avatar = ''
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg" || "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg' || 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error("上传图片只能是 JPG或者 png 格式!");
+        this.$message.error('上传图片只能是 JPG或者 png 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传图片大小不能超过 2MB!");
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
       if (isJPG && isLt2M) {
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     handleSizeChange(val) {
       this.page.pageSize = val
       this.page.pageNumber = 1
-      this.getList();
+      this.getList()
     },
     handleCurrentChange(val) {
-      console.log('当前页', val);
-      this.page.pageNumber = val;
-      this.getList();
+      this.page.pageNumber = val
+      this.getList()
     },
     formatDate(...dataList) {
-      return dataList[2] ? this.$moment(dataList[2]).format("YYYY-MM-DD HH:mm:ss") : '';
+      return dataList[2]
+        ? this.$moment(dataList[2]).format('YYYY-MM-DD HH:mm:ss')
+        : ''
     },
     handleRead: function (index, row) {
-      this.infoDialogVisible = true;
-      this.infoForm = Object.assign({}, row);
+      this.infoDialogVisible = true
+      this.infoForm = Object.assign({}, row)
     },
     handleEdit: function (index, row) {
       this.editDialogVisible = true
@@ -437,110 +431,96 @@ export default {
       this.avatar = this.infoForm.avatar
     },
     handleAdd: function () {
-      this.addDialogVisible = true;
+      this.addDialogVisible = true
       this.avatar = ''
-      this.infoForm = Object.assign({}, null);
+      this.infoForm = Object.assign({}, null)
     },
-    ChangeStatus(row) {
-      this.$confirm("确认要执行该操作么？", "提示", {}).then(() => {
-        NProgress.start();
-        if (row.status === 2) {
-          row.status = 1
-        } else {
-          row.status = 2
-        }
-        let params = { id: row.id, status: row.status }
-        changeFreeze(params).then(res => {
-          this.$message.success(res.data.msg);
-          this.getList()
-        });
-      });
-    },
-    handleSearch: function () {
-      this.getList();
+
+    handleSearch() {
+      this.getList()
     },
     handleSubmitSave: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            NProgress.start();
-            let para = Object.assign({}, this.infoForm);
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            NProgress.start()
+            let para = Object.assign({}, this.infoForm)
             save(para).then(res => {
-              NProgress.done();
-              this.$message.success(res.data.msg);
-              this.$refs["infoForm"].resetFields();
-              this.addDialogVisible = false;
-              this.getList();
-            });
-          });
+              NProgress.done()
+              this.$message.success(res.data.msg)
+              this.$refs['infoForm'].resetFields()
+              this.addDialogVisible = false
+              this.getList()
+            })
+          })
         }
-      });
+      })
     },
     handleSubmitUpdate: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            NProgress.start();
-            let para = Object.assign({}, this.infoForm);
-            console.log(para);
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            NProgress.start()
+            let para = Object.assign({}, this.infoForm)
+
             update(para).then(res => {
-              NProgress.done();
-              this.$message.success(res.data.msg);
-              this.$refs["infoForm"].resetFields();
-              this.editDialogVisible = false;
-              this.getList();
-            });
-          });
+              NProgress.done()
+              this.$message.success(res.data.msg)
+              this.$refs['infoForm'].resetFields()
+              this.editDialogVisible = false
+              this.getList()
+            })
+          })
         }
-      });
+      })
     },
-    handleRemove: function (index, row) {
-      this.$confirm("确定刪除吗？")
+    handleRemove() {
+      this.$confirm('确定刪除吗？')
         .then(_ => {
-          let id = row.id;
-          remove(id)
+          remove(this.infoForm.id)
             .then(res => {
-              this.$message.success(res.data.msg);
-              this.getList();
+              this.$message.success('删除成功！')
+              this.infoDialogVisible = false
+              this.getList()
             })
             .catch(error => {
-              this.$message.error(error);
-            });
+              this.$message.error(error)
+            })
         })
-        .catch(_ => { });
+        .catch(_ => {})
     },
     handleChangeStop() {
       const massage = this.infoForm.status === 1 ? '启用' : '停用'
       this.$confirm(`确定${massage}吗？`)
         .then(_ => {
           this.infoForm.status = this.infoForm.status === 1 ? 0 : 1
-          const params = { id: this.infoForm.id, status: this.infoForm.status }
+          const params = {id: this.infoForm.id, status: this.infoForm.status}
           changeStop(params)
             .then(res => {
-              this.getList();
-              this.$message.success(res.data.msg);
+              this.getList()
+              this.$message.success(res.data.msg)
             })
             .catch(error => {
-              this.$message.error(error);
-            });
+              this.$message.error(error)
+            })
         })
-        .catch(_ => { });
+        .catch(_ => {})
     },
-    getList: function () {
+    getList() {
       let params = {
         name: this.query.name,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
-      };
+      }
       list(params)
         .then(res => {
-          this.tableData = res.data.page.list;
-          this.page.total = res.data.page.totalRow;
+          this.tableData = res.data.page.list
+          this.page.total = res.data.page.totalRow
         })
         .catch(error => {
-          this.$message.error(error);
-          console.log(error);
-        });
+          this.$message.error(error)
+          console.log(error)
+        })
     },
     reFindFollowerslist() {
       this.page.pageNumber = 1
@@ -551,20 +531,23 @@ export default {
         name: this.query.name,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
-      };
+      }
       followersList(params)
         .then(res => {
-          this.tableData = res.data.page.list;
-          if (this.page.pageNumber * this.page.pageSize < res.data.page.totalRow) {
+          this.tableData = res.data.page.list
+          if (
+            this.page.pageNumber * this.page.pageSize <
+            res.data.page.totalRow
+          ) {
             this.page.pageNumber++
           }
           this.infoDialogVisible = false
-          this.page.total = res.data.page.totalRow;
+          this.page.total = res.data.page.totalRow
         })
         .catch(error => {
-          this.$message.error(error);
-          console.log(error);
-        });
+          this.$message.error(error)
+          console.log(error)
+        })
     },
     reFindFollowingsList() {
       this.page.pageNumber = 1
@@ -575,23 +558,26 @@ export default {
         name: this.query.name,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
-      };
+      }
       followingsList(params)
         .then(res => {
-          this.tableData = res.data.page.list;
-          if (this.page.pageNumber * this.page.pageSize < res.data.page.totalRow) {
+          this.tableData = res.data.page.list
+          if (
+            this.page.pageNumber * this.page.pageSize <
+            res.data.page.totalRow
+          ) {
             this.page.pageNumber++
           }
           this.infoDialogVisible = false
-          this.page.total = res.data.page.totalRow;
+          this.page.total = res.data.page.totalRow
         })
         .catch(error => {
-          this.$message.error(error);
-          console.log(error);
-        });
+          this.$message.error(error)
+          console.log(error)
+        })
     }
   }
-};
+}
 </script>
 
 <style <style lang="scss" scoped>

@@ -144,7 +144,7 @@
             label="封面：">
             <el-upload style="width:165px;height:165px;"
               class="img-uploader"
-              action="/admin/upload"
+              action="/upload"
               :headers="headers"
               :show-file-list="false"
               :on-success="handleCoverSuccess"
@@ -191,27 +191,21 @@
 
 <script type="text/ecmascript-6">
 // Progress 进度条
-import NProgress from "nprogress";
-import {
-  list,
-  remove,
-  save,
-  update,
-  findCreateFileldList
-} from "@/api/adv_list";
+import NProgress from 'nprogress'
+import {list, remove, save, update, findCreateFileldList} from '@/api/adv_list'
 
 export default {
   data() {
     return {
       query: {
-        title: "",
+        title: '',
         advName: ''
       },
       addEditDialogVisible: false,
       isEdit: false,
 
       isShowImgPreview: false,
-      previewImageUrl: "",
+      previewImageUrl: '',
 
       page: {
         pageNumber: 1,
@@ -221,19 +215,19 @@ export default {
 
       fieldList: [],
       //本来想放在 infoForm 里面的，但是显示不出来
-      cover: "",
+      cover: '',
       infoForm: {
-        cover: ""
+        cover: ''
       },
       rules: {
-        title: [{ required: true, message: "请输入广告标题", trigger: "blur" }],
-        cover: [{ required: true, message: "请上传封面", trigger: "change" }],
+        title: [{required: true, message: '请输入广告标题', trigger: 'blur'}],
+        cover: [{required: true, message: '请上传封面', trigger: 'change'}],
         schoolIdList: [
-          { required: true, message: "请选择展示领域", trigger: "change" }
+          {required: true, message: '请选择展示领域', trigger: 'change'}
         ]
       },
       tableData: []
-    };
+    }
   },
 
   computed: {
@@ -252,118 +246,120 @@ export default {
     headers() {
       return {
         jxtAdminSessionId: this.$store.state.token
-      };
+      }
     }
   },
   methods: {
     closeDialog(flag) {
       this[flag] = false
       this.infoForm = []
-      if (this.$refs["infoForm"]) { this.$refs["infoForm"].resetFields(); }
+      if (this.$refs['infoForm']) {
+        this.$refs['infoForm'].resetFields()
+      }
     },
     handleSizeChange: function (val) {
-      this.page.pageSize = val;
-      this.getList();
+      this.page.pageSize = val
+      this.getList()
     },
     handleCurrentChange: function (val) {
-      this.pageNumber = val;
-      this.getList();
+      this.pageNumber = val
+      this.getList()
     },
     handleCoverCardPreview(val) {
-      this.previewImageUrl = val;
-      this.isShowImgPreview = true;
+      this.previewImageUrl = val
+      this.isShowImgPreview = true
     },
     formatDate(...dataList) {
-      return this.$moment(dataList[2]).format("YYYY-MM-DD");
+      return this.$moment(dataList[2]).format('YYYY-MM-DD')
     },
     handleSearch: function () {
-      this.getList();
+      this.getList()
     },
     handleAdd: function () {
-      this.isEdit = false;
-      this.addEditDialogVisible = true;
-      this.cover = "";
-      this.infoForm = Object.assign({}, null);
+      this.isEdit = false
+      this.addEditDialogVisible = true
+      this.cover = ''
+      this.infoForm = Object.assign({}, null)
     },
     handleEdit: function (index, row) {
-      this.cover = "";
-      this.isEdit = true;
-      this.infoForm = Object.assign({}, row);
-      this.cover = this.infoForm.cover;
-      this.addEditDialogVisible = true;
+      this.cover = ''
+      this.isEdit = true
+      this.infoForm = Object.assign({}, row)
+      this.cover = this.infoForm.cover
+      this.addEditDialogVisible = true
     },
     handlePictureCardPreview: function (file) {
-      this.previewImageUrl = file.url;
-      this.isShowImgPreview = true;
+      this.previewImageUrl = file.url
+      this.isShowImgPreview = true
     },
     handleCoverRemove: function (file, fileList) {
-      this.infoForm.cover = "";
+      this.infoForm.cover = ''
     },
     handleCoverSuccess: function (res, file) {
-      this.cover = res.file.url;
-      this.infoForm.cover = res.file.url;
+      this.cover = res.file.url
+      this.infoForm.cover = res.file.url
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg" || "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg' || 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error("上传图片只能是 JPG或者 png 格式!");
+        this.$message.error('上传图片只能是 JPG或者 png 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传图片大小不能超过 2MB!");
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
       if (isJPG && isLt2M) {
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     handleSubmitSave: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            NProgress.start();
-            let para = Object.assign({}, this.infoForm);
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            NProgress.start()
+            let para = Object.assign({}, this.infoForm)
             save(para).then(res => {
-              NProgress.done();
-              this.$message.success(res.data.msg);
-              this.$refs["infoForm"].resetFields();
-              this.addEditDialogVisible = false;
-              this.getList();
-            });
-          });
+              NProgress.done()
+              this.$message.success(res.data.msg)
+              this.$refs['infoForm'].resetFields()
+              this.addEditDialogVisible = false
+              this.getList()
+            })
+          })
         }
-      });
+      })
     },
     handleSubmitUpdate: function () {
       this.$refs.infoForm.validate(valid => {
         if (valid) {
-          this.$confirm("确认提交吗？", "提示", {}).then(() => {
-            NProgress.start();
-            let para = Object.assign({}, this.infoForm);
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            NProgress.start()
+            let para = Object.assign({}, this.infoForm)
             update(para).then(res => {
-              NProgress.done();
-              this.$message.success(res.data.msg);
-              this.$refs["infoForm"].resetFields();
-              this.addEditDialogVisible = false;
-              this.getList();
-            });
-          });
+              NProgress.done()
+              this.$message.success(res.data.msg)
+              this.$refs['infoForm'].resetFields()
+              this.addEditDialogVisible = false
+              this.getList()
+            })
+          })
         }
-      });
+      })
     },
     handleRemove: function (index, row) {
-      this.$confirm("确认删除吗？")
+      this.$confirm('确认删除吗？')
         .then(_ => {
-          let id = row.id;
+          let id = row.id
           remove(id)
             .then(res => {
-              this.$message.success(res.data.msg);
-              this.getList();
+              this.$message.success(res.data.msg)
+              this.getList()
             })
             .catch(error => {
-              this.$message.error(error);
-            });
+              this.$message.error(error)
+            })
         })
-        .catch(_ => { });
+        .catch(_ => {})
     },
 
     getList: function () {
@@ -372,31 +368,30 @@ export default {
         advName: this.query.advName,
         pageNumber: this.page.pageNumber,
         pageSize: this.page.pageSize
-      };
+      }
       list(params)
         .then(res => {
-          this.tableData = res.data.page.list;
-          this.page.total = res.data.page.totalRow;
+          this.tableData = res.data.page.list
+          this.page.total = res.data.page.totalRow
         })
         .catch(error => {
-          this.$message.error(error);
-          console.log(error);
-        });
+          this.$message.error(error)
+          console.log(error)
+        })
     },
     reFindCreateFieldList() {
       findCreateFileldList().then(res => {
         this.fieldList = res.data
-        console.log('参数', this.fieldList);
+        console.log('参数', this.fieldList)
       })
     }
-
   },
   mounted() {
-    this.getList();
-    console.log('触发');
-    this.reFindCreateFieldList();
+    this.getList()
+    console.log('触发')
+    this.reFindCreateFieldList()
   }
-};
+}
 </script>
 
 <style>

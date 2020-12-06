@@ -22,24 +22,23 @@
 </template>
 
 <script>
-import HeaderItem from "./HeaderItem";
-import MenuItems from "./MenuItems";
-import BreadCrumb from "./BreadCrumb";
+import HeaderItem from './HeaderItem'
+import MenuItems from './MenuItems'
+import BreadCrumb from './BreadCrumb'
 export default {
   components: {
     HeaderItem,
     MenuItems,
     BreadCrumb
   },
-  created() { },
-  mounted() { },
+  created() {},
+  mounted() {},
   methods: {}
-};
+}
 </script>
 
 <style lang="scss" scoped>
 .wrapper {
-  height: 100vh;
   background: #fff;
   .main {
     height: auto;

@@ -3,7 +3,6 @@ package com.anshuye;
 import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.anshuye.common.model._MappingKit;
 import com.anshuye.common.routes.AdminRoutes;
-import com.anshuye.common.routes.MobileRoutes;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -31,6 +30,7 @@ public class MainConfig extends JFinalConfig {
 
 	@Override
 	public void configConstant(Constants me) {
+		me.setEncoding("utf-8");
 		me.setDevMode(p.getBoolean("devMode"));
 		me.setMaxPostSize(1024 * 1024 * 20);
 		me.setLogFactory(new Log4jLogFactory());
@@ -42,7 +42,6 @@ public class MainConfig extends JFinalConfig {
 
 	@Override
 	public void configRoute(Routes me) {
-		me.add(new MobileRoutes());
 		me.add(new AdminRoutes());
 
 	}

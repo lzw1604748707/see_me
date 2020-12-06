@@ -51,24 +51,24 @@
 </template>
 
 <script>
-import { login } from "@/api/login";
+import {login} from '@/api/login'
 export default {
   data() {
     return {
       logining: false,
       dialogVisible: false,
       loginForm: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
       },
       rules2: {
-        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        username: [{required: true, message: '请输入账号', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}]
       },
       checked: true,
       accountVerify: false,
       passwordVerify: false
-    };
+    }
   },
   methods: {
     verify(value, name) {
@@ -77,42 +77,43 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.logining = true;
+          this.logining = true
           var loginParams = {
             username: this.loginForm.username,
             password: this.loginForm.password
-          };
+          }
           login(loginParams)
             .then(res => {
-              console.log('参数为', res);
-
-              const account = res.data.account;
-              this.$store.dispatch('login', { account }).then(() => { // 生成可访问的路由表
-                const menus = account.menus;
-                this.$store.dispatch('generateRoutes', { menus }).then(() => { // 生成可访问的路由表
+              const account = res.data.account
+              this.$store.dispatch('login', {account}).then(() => {
+                console.log(account)
+                // 生成可访问的路由表
+                const menus = account.menus
+                this.$store.dispatch('generateRoutes', {menus}).then(() => {
+                  // 生成可访问的路由表
                   this.$router.addRoutes(this.$store.state.addRouters) // 动态添加可访问路由表
-                  this.$router.push({ path: "/admin" }); //登录成功之后重定向到首页
+                  this.$router.push({path: '/admin'}) //登录成功之后重定向到首页
                 })
               })
             })
             .catch(error => {
-              console.log(error);
+              console.log(error)
               // this.$message.warning('res.data.msg');
-              this.logining = false;
-            });
+              this.logining = false
+            })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/theme.scss";
+@import '@/assets/css/theme.scss';
 .login {
   width: 100vw;
   height: 100vh;
-  background: url("https://api.i-meto.com/bing?random") round;
+  background: url('https://www.talklee.com/api/bing?rand=true') round;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -192,7 +193,7 @@ export default {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background: url("https://api.i-meto.com/bing?random") round fixed;
+    background: url('https://www.talklee.com/api/bing?rand=true') round fixed;
     opacity: 0.8;
     filter: blur(20px);
   }

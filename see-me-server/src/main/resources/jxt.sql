@@ -8,7 +8,7 @@
 		ON u.id=fa.attentionId 
 		left join (select  userId, count(attentionId) as followings from sm_sys_user_attention GROUP BY  userId) fu 
 		ON u.id=fu.userId 
-		where isDelete =0
+		where u.isDelete =0
 		#if(sk.notBlank(name))
 			and name like "%"#p(name)"%"
 		#end
